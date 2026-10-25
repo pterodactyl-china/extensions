@@ -133,10 +133,10 @@ const isEverywhere = (panels: readonly AnnouncementArea[]): boolean =>
 
 const whereSummary = (panels: readonly AnnouncementArea[]): string =>
     isEverywhere(panels)
-        ? 'Shown everywhere'
-        : `Shown only on: ${AREAS.filter((area) => panels.includes(area.value))
+        ? '在所有位置显示'
+        : `仅在以下位置显示：${AREAS.filter((area) => panels.includes(area.value))
               .map((area) => area.label)
-              .join(', ')}`;
+              .join('、')}`;
 
 type Status = 'active' | 'scheduled' | 'expired';
 
@@ -146,14 +146,14 @@ const statusOf = (from: number | null, to: number | null, now: number): Status =
 const scheduleSummary = (from: number | null, to: number | null, now: number): string => {
     const status = statusOf(from, to, now);
 
-    if (status === 'expired' && to !== null) return `Ended ${formatDate(to)}, no longer shown`;
+    if (status === 'expired' && to !== null) return `已于 ${formatDate(to)} 结束，不再显示`;
     if (status === 'scheduled' && from !== null) {
         return to === null
-            ? `Starts ${formatDate(from)}, no end date`
-            : `Visible from ${formatDate(from)} until ${formatDate(to)}`;
+            ? `将于 ${formatDate(from)} 开始，无结束时间`
+            : `${formatDate(from)} 至 ${formatDate(to)} 期间显示`;
     }
 
-    return to === null ? 'Visible now, no end date' : `Visible now, until ${formatDate(to)}`;
+    return to === null ? '正在显示，无结束时间' : `正在显示，至 ${formatDate(to)}`;
 };
 
 /* ---------- validation ---------- */
@@ -162,20 +162,20 @@ const ICON_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
 const validateTitle = (value: string): string | undefined => {
     const length = value.trim().length;
-    if (length === 0) return 'Give the announcement a title.';
-    if (length > 191) return 'Keep the title under 191 characters.';
+    if (length === 0) return '请填写公告标题。';
+    if (length > 191) return '标题请控制在 191 个字符以内。';
 
     return undefined;
 };
 
 const validateBody = (value: string): string | undefined =>
-    value.trim().length > 5000 ? 'Keep the message under 5000 characters.' : undefined;
+    value.trim().length > 5000 ? '正文请控制在 5000 个字符以内。' : undefined;
 
 const validateIcon = (value: string, known: readonly string[] | undefined): string | undefined => {
     const icon = value.trim();
     if (icon === '') return undefined;
-    if (!ICON_PATTERN.test(icon) || icon.length > 64) return 'Use lowercase words joined by dashes, such as life-buoy.';
-    if (known && !known.includes(icon)) return 'No icon has that name. Pick one from the suggestions.';
+    if (!ICON_PATTERN.test(icon) || icon.length > 64) return '请使用小写单词，以短横线连接，例如 life-buoy。';
+    if (known && !known.includes(icon)) return '没有该名称的图标，请从建议列表中选择。';
 
     return undefined;
 };
@@ -184,18 +184,18 @@ const validateIcon = (value: string, known: readonly string[] | undefined): stri
 const validateUrlTyping = (value: string): string | undefined => {
     const url = value.trim().toLowerCase();
     if (url === '') return undefined;
-    if (url.length > 2048) return 'Keep the address under 2048 characters.';
-    if (/\s/.test(url)) return 'A web address cannot contain spaces.';
+    if (url.length > 2048) return '地址请控制在 2048 个字符以内。';
+    if (/\s/.test(url)) return '网址中不能包含空格。';
     const couldBecomeValid = ['http://', 'https://'].some(
         (scheme) => url.startsWith(scheme) || scheme.startsWith(url)
     );
 
-    return couldBecomeValid ? undefined : 'Start the address with http:// or https://';
+    return couldBecomeValid ? undefined : '地址需以 http:// 或 https:// 开头';
 };
 
 const validateUrlFinal = (value: string, label: string): string | undefined => {
     const url = value.trim();
-    if (url === '') return label.trim() === '' ? undefined : 'Add the address the link opens.';
+    if (url === '') return label.trim() === '' ? undefined : '请填写链接要打开的地址。';
     try {
         const parsed = new URL(url);
         if ((parsed.protocol === 'http:' || parsed.protocol === 'https:') && parsed.hostname !== '') return undefined;
@@ -203,21 +203,21 @@ const validateUrlFinal = (value: string, label: string): string | undefined => {
         // falls through to the message below
     }
 
-    return 'Enter a full address, such as https://example.com/status';
+    return '请输入完整地址，例如 https://example.com/status';
 };
 
 const validateUrlLabel = (value: string, url: string): string | undefined => {
     const label = value.trim();
-    if (label.length > 191) return 'Keep the link text under 191 characters.';
+    if (label.length > 191) return '链接文字请控制在 191 个字符以内。';
 
-    return label === '' && url.trim() !== '' ? 'Add the text people click on.' : undefined;
+    return label === '' && url.trim() !== '' ? '请填写供点击的链接文字。' : undefined;
 };
 
 const validateEnd = (to: string, from: string): string | undefined => {
     const start = toTime(from);
     const end = toTime(to);
 
-    return start !== null && end !== null && end <= start ? 'The end must be after the start.' : undefined;
+    return start !== null && end !== null && end <= start ? '结束时间必须晚于开始时间。' : undefined;
 };
 
 interface ServerErrors {
@@ -280,7 +280,7 @@ function TypePicker({ value, onChange }: { value: AnnouncementType; onChange: (v
 
     return (
         <fieldset className={'ann:m-0 ann:min-w-0 ann:border-0 ann:p-0'}>
-            <Label as={'legend'}>Type</Label>
+            <Label as={'legend'}>类型</Label>
             <div className={'ann:grid ann:grid-cols-2 ann:gap-2 ann:sm:grid-cols-4'}>
                 {TYPES.map((type) => {
                     const style = TYPE_STYLES[type.value];
@@ -346,17 +346,17 @@ function TypeBadge({ type }: { type: AnnouncementType }) {
 
 const STATUS_STYLES: Record<Status, { label: string; badge: string; dot: string }> = {
     active: {
-        label: 'Active',
+        label: '生效中',
         badge: 'ann:border-success/25 ann:bg-success/10 ann:text-success',
         dot: 'ann:bg-success',
     },
     scheduled: {
-        label: 'Scheduled',
+        label: '待生效',
         badge: 'ann:border-warning/25 ann:bg-warning/10 ann:text-warning',
         dot: 'ann:bg-warning',
     },
     expired: {
-        label: 'Expired',
+        label: '已过期',
         badge: 'ann:border-border ann:bg-muted ann:text-muted-foreground',
         dot: 'ann:bg-muted-foreground',
     },
@@ -401,12 +401,12 @@ function Preview({ values }: { values: FormState }) {
             ].join(' ')}
         >
             <p className={'ann:mb-2 ann:text-xs ann:font-medium ann:uppercase ann:tracking-wide ann:text-muted-foreground'}>
-                Preview
+                预览
             </p>
             <div inert className={'ann:max-h-40 ann:overflow-y-auto'}>
                 <Banner
                     announcement={{
-                        title: values.title.trim() || 'Your title',
+                        title: values.title.trim() || '公告标题',
                         body: values.body.trim() || null,
                         type: values.type,
                         icon: ICON_PATTERN.test(icon) ? icon : null,
@@ -456,7 +456,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                     setFormError(errors.form);
                     if (OPTION_FIELDS.some((name) => errors.fields[name])) setShowOptions(true);
 
-                    return { form: errors.form ?? 'Some fields need another look.', fields: errors.fields };
+                    return { form: errors.form ?? '部分字段需要检查。', fields: errors.fields };
                 } finally {
                     setSaving(false);
                 }
@@ -464,7 +464,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
         },
         onSubmit: async () => {
             await queryClient.invalidateQueries({ queryKey: ['ext-announcements'] });
-            toast.success(editing === 'new' ? 'Announcement created.' : 'Announcement saved.');
+            toast.success(editing === 'new' ? '公告已创建。' : '公告已保存。');
             onClose();
         },
         onSubmitInvalid: ({ formApi }) => {
@@ -479,7 +479,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
             open={open}
             onClose={onClose}
             preventExternalClose={saving}
-            title={editing === 'new' ? 'New announcement' : 'Edit announcement'}
+            title={editing === 'new' ? '新建公告' : '编辑公告'}
         >
             <Form form={form} id={formId} className={'ann:isolate ann:m-0'}>
                 <form.Subscribe selector={(state) => state.values}>
@@ -493,8 +493,8 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                         {(field) => (
                             <field.TextField
                                 type={'text'}
-                                label={'Title'}
-                                placeholder={'Scheduled maintenance tonight'}
+                                label={'标题'}
+                                placeholder={'今晚例行维护'}
                                 maxLength={191}
                                 autoComplete={'off'}
                                 autoFocus
@@ -505,9 +505,9 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                     <form.AppField name={'body'} validators={{ onChange: ({ value }) => validateBody(value) }}>
                         {(field) => (
                             <field.TextAreaField
-                                label={'Message'}
+                                label={'正文'}
                                 rows={3}
-                                description={'Optional. A sentence or two under the title.'}
+                                description={'可选。显示在标题下方的一两句话。'}
                             />
                         )}
                     </form.AppField>
@@ -530,7 +530,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                 >
                                     <span className={'ann:min-w-0 ann:flex-1'}>
                                         <span className={'ann:block ann:text-sm ann:font-medium ann:uppercase'}>
-                                            More options
+                                            更多选项
                                         </span>
                                         <span
                                             className={
@@ -538,7 +538,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                             }
                                         >
                                             {showOptions
-                                                ? 'Link, icon, where it shows, schedule and dismissal.'
+                                                ? '链接、图标、显示位置、生效时间与关闭方式。'
                                                 : [
                                                       whereSummary(values.panels),
                                                       scheduleSummary(
@@ -546,7 +546,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                           toTime(values.valid_to),
                                                           Date.now()
                                                       ),
-                                                      values.dismissible ? 'Users can dismiss it' : 'Cannot be dismissed',
+                                                      values.dismissible ? '允许用户关闭' : '不可关闭',
                                                   ].join(' · ')}
                                         </span>
                                     </span>
@@ -568,7 +568,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                             validators={{
                                                 onChange: ({ value }) =>
                                                     value.trim().length > 191
-                                                        ? 'Keep the link text under 191 characters.'
+                                                        ? '链接文字请控制在 191 个字符以内。'
                                                         : undefined,
                                                 onSubmit: ({ value, fieldApi }) =>
                                                     validateUrlLabel(value, fieldApi.form.getFieldValue('url_link')),
@@ -577,8 +577,8 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                             {(field) => (
                                                 <field.TextField
                                                     type={'text'}
-                                                    label={'Link text'}
-                                                    placeholder={'Read more'}
+                                                    label={'链接文字'}
+                                                    placeholder={'了解更多'}
                                                     autoComplete={'off'}
                                                 />
                                             )}
@@ -595,7 +595,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                 <field.TextField
                                                     type={'url'}
                                                     inputMode={'url'}
-                                                    label={'Link address'}
+                                                    label={'链接地址'}
                                                     placeholder={'https://example.com/status'}
                                                     autoComplete={'off'}
                                                     spellCheck={false}
@@ -603,7 +603,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                             )}
                                         </form.AppField>
                                     </div>
-                                    <Hint>Optional. Adds a link after the message. Fill in both or neither.</Hint>
+                                    <Hint>可选。在正文后添加一个链接，两项都填或都不填。</Hint>
                                 </div>
 
                                 <form.AppField
@@ -620,12 +620,12 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                 <div className={'ann:min-w-0 ann:flex-1'}>
                                                     <field.TextField
                                                         type={'text'}
-                                                        label={'Icon'}
+                                                        label={'图标'}
                                                         list={`${optionsId}-icons`}
                                                         maxLength={64}
                                                         placeholder={'life-buoy'}
                                                         description={
-                                                            'Optional, shown before the title. Type to search icon names.'
+                                                            '可选，显示在标题之前。输入即可搜索图标名称。'
                                                         }
                                                         autoComplete={'off'}
                                                         autoCapitalize={'none'}
@@ -657,7 +657,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
 
                                         return (
                                             <fieldset className={'ann:m-0 ann:min-w-0 ann:border-0 ann:p-0'}>
-                                                <Label as={'legend'}>Where it shows</Label>
+                                                <Label as={'legend'}>显示位置</Label>
                                                 <div
                                                     className={
                                                         'ann:mt-1 ann:flex ann:flex-col ann:gap-x-6 ann:gap-y-3 ann:sm:flex-row ann:sm:flex-wrap'
@@ -701,8 +701,8 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                 ) : (
                                                     <Hint>
                                                         {selected.length === 0
-                                                            ? 'Shown everywhere. Tick places to limit it to those.'
-                                                            : `${whereSummary(selected)}.`}
+                                                            ? '在所有位置显示。勾选后仅显示在这些位置。'
+                                                            : `${whereSummary(selected)}。`}
                                                     </Hint>
                                                 )}
                                             </fieldset>
@@ -713,7 +713,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                 <div>
                                     <div className={'ann:grid ann:gap-4 ann:sm:grid-cols-2'}>
                                         <form.AppField name={'valid_from'}>
-                                            {(field) => <field.TextField type={'datetime-local'} label={'Starts'} />}
+                                            {(field) => <field.TextField type={'datetime-local'} label={'开始时间'} />}
                                         </form.AppField>
                                         <form.AppField
                                             name={'valid_to'}
@@ -723,7 +723,7 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                     validateEnd(value, fieldApi.form.getFieldValue('valid_from')),
                                             }}
                                         >
-                                            {(field) => <field.TextField type={'datetime-local'} label={'Ends'} />}
+                                            {(field) => <field.TextField type={'datetime-local'} label={'结束时间'} />}
                                         </form.AppField>
                                     </div>
                                     <form.Subscribe selector={(state) => state.values}>
@@ -734,8 +734,8 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                             return (
                                                 <Hint>
                                                     {from !== null && to !== null && to <= from
-                                                        ? 'Leave either empty for no limit. Times are in your local time.'
-                                                        : `${scheduleSummary(from, to, Date.now())}. Leave either empty for no limit.`}
+                                                        ? '任一项留空即不限制。时间均按你所在的本地时区。'
+                                                        : `${scheduleSummary(from, to, Date.now())}。任一项留空即不限制。`}
                                                 </Hint>
                                             );
                                         }}
@@ -745,9 +745,9 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                 <form.AppField name={'dismissible'}>
                                     {(field) => (
                                         <field.SwitchField
-                                            label={'Users can dismiss it'}
+                                            label={'允许用户关闭'}
                                             description={
-                                                'Once dismissed, the banner stays hidden for that user. Turn off for notices everyone must keep seeing.'
+                                                '关闭后，该用户将不再看到此横幅。若公告必须持续可见，请关闭此选项。'
                                             }
                                         />
                                     )}
@@ -759,11 +759,11 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
             </Form>
             <Dialog.Footer>
                 <Button.Text type={'button'} disabled={saving} onClick={onClose}>
-                    Cancel
+                    取消
                 </Button.Text>
                 <form.AppForm>
                     <form.SubmitButton form={formId}>
-                        {editing === 'new' ? 'Create announcement' : 'Save changes'}
+                        {editing === 'new' ? '创建公告' : '保存更改'}
                     </form.SubmitButton>
                 </form.AppForm>
             </Dialog.Footer>
@@ -795,7 +795,7 @@ function ConfirmDialog({ open, onClose, title, confirm, danger, pending, onConfi
             </div>
             <Dialog.Footer>
                 <Button.Text type={'button'} disabled={pending} onClick={onClose}>
-                    Cancel
+                    取消
                 </Button.Text>
                 <ConfirmButton type={'button'} isLoading={pending} disabled={pending} onClick={onConfirm}>
                     {confirm}
@@ -828,7 +828,7 @@ export default function AnnouncementsScreen() {
         mutationFn: (id: number) => deleteAnnouncement(id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['ext-announcements'] });
-            toast.success('Announcement deleted.');
+            toast.success('公告已删除。');
             setDeleting(null);
         },
         onError: (cause) => toast.error(httpErrorToHuman(cause)),
@@ -837,7 +837,7 @@ export default function AnnouncementsScreen() {
     const email = useMutation({
         mutationFn: (id: number) => emailAnnouncement(id),
         onSuccess: (count) => {
-            toast.success(`Email queued for ${count} ${count === 1 ? 'user' : 'users'}.`);
+            toast.success(`已为 ${count} 位用户排队发送邮件。`);
             setEmailing(null);
         },
         onError: (cause) => toast.error(httpErrorToHuman(cause)),
@@ -846,20 +846,20 @@ export default function AnnouncementsScreen() {
     const rows = data?.announcements;
     const userCount = data?.userCount ?? null;
     const audience =
-        userCount === null ? 'all users' : userCount === 1 ? 'the 1 user' : `all ${userCount.toLocaleString()} users`;
+        userCount === null ? '所有用户' : userCount === 1 ? '这 1 位用户' : `全部 ${userCount.toLocaleString()} 位用户`;
     const now = Date.now();
 
     const createButton = (
         <Button type={'button'} onClick={() => setEditing('new')}>
             <span className={'ann:inline-flex ann:items-center ann:gap-2'}>
                 <Plus aria-hidden={'true'} className={'ann:size-4'} />
-                New announcement
+                新建公告
             </span>
         </Button>
     );
 
     return (
-        <PageContentBlock title={'Announcements'}>
+        <PageContentBlock title={'公告'}>
             <header
                 className={
                     'ann:mb-6 ann:flex ann:flex-col ann:gap-3 ann:sm:flex-row ann:sm:items-center ann:sm:justify-between'
@@ -867,10 +867,10 @@ export default function AnnouncementsScreen() {
             >
                 <div className={'ann:min-w-0'}>
                     <h1 className={'ann:font-header ann:text-2xl ann:font-semibold ann:text-foreground'}>
-                        Announcements
+                        公告
                     </h1>
                     <p className={'ann:mt-1 ann:text-sm ann:leading-relaxed ann:text-foreground/70'}>
-                        Banners shown to everyone using the panel.
+                        向所有使用面板的用户展示的横幅。
                     </p>
                 </div>
                 {rows && rows.length > 0 && <div className={'ann:shrink-0'}>{createButton}</div>}
@@ -881,7 +881,7 @@ export default function AnnouncementsScreen() {
                     <div className={'ann:flex ann:flex-wrap ann:items-center ann:gap-x-4 ann:gap-y-2'}>
                         <span>{httpErrorToHuman(error)}</span>
                         <Button.Text type={'button'} size={'xsmall'} onClick={() => void refetch()}>
-                            Try again
+                            重试
                         </Button.Text>
                     </div>
                 </Alert>
@@ -897,15 +897,14 @@ export default function AnnouncementsScreen() {
                 >
                     <Megaphone aria-hidden={'true'} className={'ann:mx-auto ann:size-8 ann:text-muted-foreground'} />
                     <h2 className={'ann:mt-4 ann:font-header ann:text-lg ann:font-semibold ann:text-foreground'}>
-                        No announcements yet
+                        暂无公告
                     </h2>
                     <p
                         className={
                             'ann:mx-auto ann:mt-2 ann:max-w-xl ann:text-sm ann:leading-relaxed ann:text-muted-foreground'
                         }
                     >
-                        An announcement is a banner at the top of the panel that tells your users about things like
-                        maintenance, outages or news.
+                        公告是显示在面板顶部的横幅，用于告知用户维护、故障或新动态等信息。
                     </p>
                     <div className={'ann:mt-6'}>{createButton}</div>
                 </section>
@@ -914,11 +913,11 @@ export default function AnnouncementsScreen() {
                     rows={rows}
                     isFetching={isFetching}
                     keyOf={(row) => String(row.id)}
-                    emptyState={'No announcements yet.'}
+                    emptyState={'暂无公告。'}
                     columns={[
                         {
                             id: 'title',
-                            label: 'Announcement',
+                            label: '公告',
                             cell: (row) => (
                                 <div className={'ann:min-w-40 ann:max-w-sm'}>
                                     <p className={'ann:truncate ann:font-medium ann:text-foreground'}>{row.title}</p>
@@ -930,22 +929,22 @@ export default function AnnouncementsScreen() {
                                 </div>
                             ),
                         },
-                        { id: 'type', label: 'Type', cell: (row) => <TypeBadge type={row.type} /> },
+                        { id: 'type', label: '类型', cell: (row) => <TypeBadge type={row.type} /> },
                         {
                             id: 'status',
-                            label: 'Status',
+                            label: '状态',
                             cell: (row) => {
                                 const from = toTime(row.valid_from);
                                 const to = toTime(row.valid_to);
                                 const status = statusOf(from, to, now);
                                 const detail =
                                     status === 'expired' && to !== null
-                                        ? `Ended ${formatDate(to)}`
+                                        ? `已于 ${formatDate(to)} 结束`
                                         : status === 'scheduled' && from !== null
-                                          ? `Starts ${formatDate(from)}`
+                                          ? `将于 ${formatDate(from)} 开始`
                                           : to !== null
-                                            ? `Until ${formatDate(to)}`
-                                            : 'No end date';
+                                            ? `至 ${formatDate(to)}`
+                                            : '无结束时间';
 
                                 return (
                                     <div>
@@ -963,13 +962,13 @@ export default function AnnouncementsScreen() {
                         },
                         {
                             id: 'panels',
-                            label: 'Shown on',
+                            label: '显示位置',
                             cell: (row) => (
                                 <span className={'ann:text-sm'}>
-                                    {isEverywhere(row.panels) ? 'Everywhere' : row.panels.map(areaLabel).join(', ')}
+                                    {isEverywhere(row.panels) ? '所有位置' : row.panels.map(areaLabel).join('、')}
                                     {!row.dismissible && (
                                         <span className={'ann:block ann:text-xs ann:text-muted-foreground'}>
-                                            Cannot be dismissed
+                                            不可关闭
                                         </span>
                                     )}
                                 </span>
@@ -977,33 +976,33 @@ export default function AnnouncementsScreen() {
                         },
                         {
                             id: 'actions',
-                            label: <span className={'ann:sr-only'}>Actions</span>,
+                            label: <span className={'ann:sr-only'}>操作</span>,
                             cell: (row) => (
                                 <div className={'ann:flex ann:justify-end ann:gap-2'}>
                                     <Button.Text
                                         type={'button'}
                                         size={'xsmall'}
-                                        aria-label={`Edit ${row.title}`}
+                                        aria-label={`编辑 ${row.title}`}
                                         onClick={() => setEditing(row)}
                                     >
-                                        Edit
+                                        编辑
                                     </Button.Text>
                                     <Button.Text
                                         type={'button'}
                                         size={'xsmall'}
-                                        aria-label={`Email ${row.title} to ${audience}`}
+                                        aria-label={`将 ${row.title} 通过邮件发送给${audience}`}
                                         onClick={() => setEmailing(row)}
                                     >
-                                        Email
+                                        发邮件
                                     </Button.Text>
                                     <Button.Danger
                                         type={'button'}
                                         size={'xsmall'}
                                         isSecondary
-                                        aria-label={`Delete ${row.title}`}
+                                        aria-label={`删除 ${row.title}`}
                                         onClick={() => setDeleting(row)}
                                     >
-                                        Delete
+                                        删除
                                     </Button.Danger>
                                 </div>
                             ),
@@ -1025,15 +1024,14 @@ export default function AnnouncementsScreen() {
                 <ConfirmDialog
                     open={deleteDialog.open}
                     onClose={() => setDeleting(null)}
-                    title={'Delete announcement'}
-                    confirm={'Delete announcement'}
+                    title={'删除公告'}
+                    confirm={'删除公告'}
                     danger
                     pending={remove.isPending}
                     onConfirm={() => deleteDialog.value && remove.mutate(deleteDialog.value.id)}
                 >
                     <p>
-                        This permanently deletes <Strong>{deleteDialog.value.title}</Strong>. Its banner disappears for
-                        everyone right away.
+                        此操作将永久删除 <Strong>{deleteDialog.value.title}</Strong>，其横幅会立即对所有人消失。
                     </p>
                 </ConfirmDialog>
             )}
@@ -1042,22 +1040,21 @@ export default function AnnouncementsScreen() {
                 <ConfirmDialog
                     open={emailDialog.open}
                     onClose={() => setEmailing(null)}
-                    title={'Email this announcement'}
+                    title={'通过邮件发送此公告'}
                     confirm={
                         userCount === null
-                            ? 'Email all users'
-                            : `Email ${userCount.toLocaleString()} ${userCount === 1 ? 'user' : 'users'}`
+                            ? '发送给所有用户'
+                            : `发送给 ${userCount.toLocaleString()} 位用户`
                     }
                     pending={email.isPending}
                     onConfirm={() => emailDialog.value && email.mutate(emailDialog.value.id)}
                 >
                     <p>
-                        This emails <Strong>{emailDialog.value.title}</Strong> to <Strong>{audience}</Strong> on this
-                        panel, whether or not they dismissed the banner.
+                        将向 <Strong>{audience}</Strong> 发送邮件，内容为{' '}
+                        <Strong>{emailDialog.value.title}</Strong>，无论对方是否已关闭横幅。
                     </p>
                     <p>
-                        The email contains the title, the message and the link. It cannot be recalled once sent, and
-                        sending again emails everyone a second time.
+                        邮件包含标题、正文和链接。发送后无法撤回，再次发送会给所有人重复发送一次。
                     </p>
                 </ConfirmDialog>
             )}

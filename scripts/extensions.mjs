@@ -1,5 +1,5 @@
-// Prints the extension folders in this repository (those with an extension.json)
-// as a JSON array, for the CI build matrix.
+// 将本仓库中的扩展文件夹（即含有 extension.json 的文件夹）
+// 以 JSON 数组的形式输出，供 CI 构建矩阵使用。
 import fs from 'node:fs';
 
 export function extensions(root = '.') {

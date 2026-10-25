@@ -1,30 +1,29 @@
-# Announcements
+# 公告
 
-Panel-wide announcement banners. Admins write announcements; users see them as coloured
-banners and can dismiss them.
+全站公告横幅。管理员撰写公告，用户会看到彩色的横幅提示，并可以关闭它们。
 
-- Title, body, type (info, success, warning, danger), optional link and icon.
-- Optional start and end time.
-- Show on the server list, the server console, the admin overview, or everywhere.
-- Optional per-user dismissal.
-- Email an announcement to all users.
+- 标题、正文、类型（信息、成功、警告、危险），以及可选的链接和图标。
+- 可选的开始与结束时间。
+- 可显示在服务器列表、服务器控制台、管理概览，或所有位置。
+- 可选的按用户关闭。
+- 可将公告通过邮件发送给所有用户。
 
-## Install
+## 安装
 
-Download [announcements.zip](https://github.com/pterodactyl/extensions/releases/latest/download/announcements.zip)
-from the latest release, then on the panel host:
+从最新版本中下载 [announcements.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/announcements.zip)，
+然后在面板所在主机上执行：
 
 ```sh
 php artisan p:extension:install /path/to/announcements.zip --enable
 ```
 
-Reload the panel, then manage announcements under Admin > Announcements.
+重新加载面板，随后可在「管理 > 公告」中管理公告。
 
-## Notes
+## 说明
 
-- Only root administrators can manage announcements.
-- Emails are queued, so a queue worker must be running for them to send.
+- 只有根管理员可以管理公告。
+- 邮件通过队列发送，因此需要运行队列处理器（queue worker）才能真正发出。
 
-## Credit
+## 致谢
 
-Based on the idea of the Announcements plugin for Pelican Panel by Boy132. Rewritten for the Pterodactyl panel.
+基于 Boy132 为 Pelican Panel 编写的 Announcements 插件思路，为 Pterodactyl 面板重写。

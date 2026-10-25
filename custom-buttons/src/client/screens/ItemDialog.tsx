@@ -78,8 +78,8 @@ const eggIdOf = (value: string): number | null => (value === ANY_EGG ? null : Nu
 const serverIdOf = (value: string): number | null => (value.trim() === '' ? null : Number.parseInt(value.trim(), 10));
 
 const validateLabel = (value: string): string | undefined => {
-    if (value.trim() === '') return 'Enter the text to show.';
-    if (value.trim().length > 191) return 'Use 191 characters or fewer.';
+    if (value.trim() === '') return '请输入要显示的文字。';
+    if (value.trim().length > 191) return '请使用 191 个以内的字符。';
 
     return undefined;
 };
@@ -88,25 +88,25 @@ const validateLabel = (value: string): string | undefined => {
 // an http(s) address or a path on this panel.
 const validateUrl = (value: string, placeholders: readonly string[]): string | undefined => {
     let url = value.trim();
-    if (url === '') return 'Enter the address this opens.';
-    if (url.length > 2048) return 'Use 2048 characters or fewer.';
+    if (url === '') return '请输入此项目要打开的地址。';
+    if (url.length > 2048) return '请使用 2048 个以内的字符。';
     for (const token of placeholders) url = url.split(token).join('x');
-    if (/[\u0000- \u007f]/.test(url)) return 'An address cannot contain spaces.';
+    if (/[\u0000- \u007f]/.test(url))     return '地址中不能包含空格。';
     if (/^https?:\/\/[^/]+/i.test(url) || /^\/(?![/\\])/.test(url)) return undefined;
 
-    return 'Start with https:// or http://, or with / for a page on this panel.';
+    return '请以 https://、http:// 开头，或以 / 开头指向本面板的页面。';
 };
 
 const validateIcon = (value: string): string | undefined =>
     value.trim() === '' || (ICON_PATTERN.test(value.trim()) && value.trim().length <= 64)
         ? undefined
-        : 'Use lowercase words joined by dashes, like life-buoy.';
+        : '请使用小写单词，以短横线连接，例如 life-buoy。';
 
 const validateFeature = (value: string): string | undefined =>
-    value.trim().length > 191 ? 'Use 191 characters or fewer.' : undefined;
+    value.trim().length > 191 ? '请使用 191 个以内的字符。' : undefined;
 
 const validateServerId = (value: string): string | undefined =>
-    value.trim() === '' || /^[1-9]\d*$/.test(value.trim()) ? undefined : 'Enter the server number, like 12.';
+    value.trim() === '' || /^[1-9]\d*$/.test(value.trim()) ? undefined : '请输入服务器编号，例如 12。';
 
 // Fields are checked when they lose focus and on save. Once a field shows an error,
 // check it again on every change so the message goes away as soon as it is fixed.
@@ -126,7 +126,7 @@ function serverFieldErrors(cause: unknown): { field: FieldName; message: string 
         const field = FIELD_NAMES.find((name) => name === error?.meta?.source_field);
         if (!field || typeof error?.detail !== 'string') return [];
 
-        return [{ field, message: field === 'server_id' ? 'No server has that number.' : error.detail }];
+        return [{ field, message: field === 'server_id' ? '没有该编号的服务器。' : error.detail }];
     });
 }
 
@@ -202,9 +202,9 @@ function PlaceholderChips({ placeholders, onInsert }: { placeholders: readonly s
     if (placeholders.length === 0) return null;
 
     return (
-        <div className={'cb:mt-2'} role={'group'} aria-label={'Add a server value to the URL'}>
+        <div className={'cb:mt-2'} role={'group'} aria-label={'把服务器的某个值插入到网址中'}>
             <p className={'cb:m-0 cb:mb-1.5 cb:text-xs cb:text-foreground/70'}>
-                Add a value from the server the link is opened on:
+                插入打开链接的这台服务器的值：
             </p>
             <div className={'cb:flex cb:flex-wrap cb:gap-1.5'}>
                 {placeholders.map((token) => (
@@ -258,7 +258,7 @@ export default function ItemDialog({
 }) {
     const queryClient = useQueryClient();
     const isButton = kind === 'button';
-    const noun = isButton ? 'button' : 'sidebar item';
+    const noun = isButton ? '按钮' : '侧边栏项目';
     const formId = useId();
     const urlId = useId();
     const iconListId = useId();
@@ -313,7 +313,7 @@ export default function ItemDialog({
             }
 
             await queryClient.invalidateQueries({ queryKey: ['ext-custom-buttons'] });
-            toast.success(editing ? 'Changes saved.' : isButton ? 'Button created.' : 'Sidebar item created.');
+            toast.success(editing ? '更改已保存。' : isButton ? '按钮已创建。' : '侧边栏项目已创建。');
             onClose();
         },
     });
@@ -335,7 +335,7 @@ export default function ItemDialog({
     };
 
     const eggOptions = [
-        { value: ANY_EGG, label: 'Any egg' },
+        { value: ANY_EGG, label: '任意 Egg' },
         ...meta.eggs.map((egg) => ({ value: String(egg.id), label: egg.name })),
     ];
 
@@ -347,11 +347,11 @@ export default function ItemDialog({
                     onClose={onClose}
                     preventExternalClose={isSubmitting}
                     hideCloseIcon={isSubmitting}
-                    title={`${editing ? 'Edit' : 'New'} ${noun}`}
+                    title={`${editing ? '编辑' : '新建'}${noun}`}
                     description={
                         isButton
-                            ? 'A link shown with the power buttons on the server console.'
-                            : 'A link shown in the server navigation.'
+                            ? '与电源按钮一同显示在服务器控制台上的链接。'
+                            : '显示在服务器导航中的链接。'
                     }
                 >
                     <Form form={form} id={formId} className={'cb:m-0 cb:grid cb:gap-5'}>
@@ -362,7 +362,7 @@ export default function ItemDialog({
                                     position={values.position}
                                     newTab={values.new_tab}
                                     item={{
-                                        label: values.label.trim() || (isButton ? 'Button text' : 'Label'),
+                                        label: values.label.trim() || (isButton ? '按钮文字' : '名称'),
                                         icon: validateIcon(values.icon) ? null : values.icon.trim(),
                                         color: values.color,
                                     }}
@@ -378,8 +378,8 @@ export default function ItemDialog({
                             {(field) => (
                                 <field.TextField
                                     type={'text'}
-                                    label={isButton ? 'Button text' : 'Label'}
-                                    description={isButton ? 'The text on the button.' : 'The text of the link.'}
+                                    label={isButton ? '按钮文字' : '名称'}
+                                    description={isButton ? '按钮上显示的文字。' : '链接显示的文字。'}
                                     maxLength={191}
                                     autoComplete={'off'}
                                 />
@@ -397,8 +397,8 @@ export default function ItemDialog({
                                         id={urlId}
                                         type={'text'}
                                         inputMode={'url'}
-                                        label={'URL'}
-                                        description={'A full address, or a path like /account for a page on this panel.'}
+                                        label={'网址'}
+                                        description={'完整地址，或 /account 这样的路径（指向本面板的页面）。'}
                                         placeholder={'https://example.com/'}
                                         autoComplete={'off'}
                                         autoCapitalize={'off'}
@@ -412,7 +412,7 @@ export default function ItemDialog({
                             <PlaceholderChips placeholders={meta.placeholders} onInsert={insertPlaceholder} />
                         </div>
 
-                        <SectionHeading>Appearance</SectionHeading>
+                        <SectionHeading>外观</SectionHeading>
 
                         <form.AppField
                             name={'icon'}
@@ -427,12 +427,12 @@ export default function ItemDialog({
                                     <>
                                         <field.TextField
                                             type={'text'}
-                                            label={'Icon'}
+                                            label={'图标'}
                                             list={iconListId}
                                             description={
                                                 unknown
-                                                    ? 'No icon has this name, so the link icon is shown. Pick one from the suggestions.'
-                                                    : 'Type to search icon names, like life-buoy. Leave empty for the link icon.'
+                                                    ? '没有该名称的图标，将显示链接图标。请从建议列表中选择。'
+                                                    : '输入即可搜索图标名称，例如 life-buoy。留空则使用链接图标。'
                                             }
                                             placeholder={'link'}
                                             maxLength={64}
@@ -454,7 +454,7 @@ export default function ItemDialog({
                             <form.AppField name={'color'}>
                                 {() => (
                                     <ChoiceField
-                                        legend={'Colour'}
+                                        legend={'配色'}
                                         choices={COLOR_CHOICES}
                                         className={'cb:grid-cols-2 cb:sm:grid-cols-3'}
                                     />
@@ -465,7 +465,7 @@ export default function ItemDialog({
                         <form.AppField name={'position'}>
                             {() => (
                                 <ChoiceField
-                                    legend={'Position'}
+                                    legend={'位置'}
                                     choices={(['before', 'after'] as const).map((value) => ({
                                         value,
                                         label: POSITION_LABELS[kind][value],
@@ -478,12 +478,12 @@ export default function ItemDialog({
                         <div className={'cb:grid cb:gap-4 cb:sm:grid-cols-2'}>
                             <form.AppField name={'new_tab'}>
                                 {(field) => (
-                                    <field.SwitchField label={'Open in a new tab'} description={'Keeps the panel open.'} />
+                                    <field.SwitchField label={'在新标签页打开'} description={'保持面板页面不被关闭。'} />
                                 )}
                             </form.AppField>
                             <form.AppField name={'is_active'}>
                                 {(field) => (
-                                    <field.SwitchField label={'Active'} description={'Turn off to hide it for now.'} />
+                                    <field.SwitchField label={'启用'} description={'关闭后暂时隐藏它。'} />
                                 )}
                             </form.AppField>
                         </div>
@@ -530,25 +530,25 @@ export default function ItemDialog({
                                             />
                                             <span className={'cb:min-w-0 cb:flex-1'}>
                                                 <span className={'cb:block cb:text-sm cb:font-medium cb:uppercase'}>
-                                                    Only show on
+                                                    仅在以下位置显示
                                                 </span>
                                                 <span className={'cb:block cb:text-xs cb:text-muted-foreground'}>
-                                                    {summary.length === 0 ? 'Shown on every server' : summary.join(', ')}
+                                                    {summary.length === 0 ? '在所有服务器上显示' : summary.join('、')}
                                                 </span>
                                             </span>
                                         </button>
                                         <div id={filtersId} hidden={!expanded}>
                                             <div className={'cb:grid cb:gap-5 cb:border-t cb:border-border cb:p-3'}>
                                                 <p className={'cb:m-0 cb:text-xs cb:leading-relaxed cb:text-foreground/70'}>
-                                                    Leave everything empty to show it on every server. A server has
-                                                    to match each filter you set.
+                                                    全部留空即在所有服务器上显示。设置了多项筛选时，
+                                                    服务器需要同时满足所有条件。
                                                 </p>
                                                 <form.AppField name={'egg_id'}>
                                                     {(field) => (
                                                         <field.SelectField
                                                             label={'Egg'}
                                                             options={eggOptions}
-                                                            description={'Only servers that use this egg.'}
+                                                            description={'仅对使用该 Egg 的服务器显示。'}
                                                         />
                                                     )}
                                                 </form.AppField>
@@ -560,9 +560,9 @@ export default function ItemDialog({
                                                     {(field) => (
                                                         <field.TextField
                                                             type={'text'}
-                                                            label={'Egg feature or tag'}
+                                                            label={'Egg 特性或标签'}
                                                             description={
-                                                                'Only servers whose egg has this feature or tag, like eula.'
+                                                                '仅对 Egg 含有该特性或标签的服务器显示，例如 eula。'
                                                             }
                                                             maxLength={191}
                                                             autoComplete={'off'}
@@ -580,9 +580,9 @@ export default function ItemDialog({
                                                         <field.TextField
                                                             type={'text'}
                                                             inputMode={'numeric'}
-                                                            label={'Server number'}
+                                                            label={'服务器编号'}
                                                             description={
-                                                                'Only this server. The number is at the end of its admin page address, like 12 in /panel/servers/12.'
+                                                                '仅对这一台服务器显示。编号位于其管理页面地址的末尾，例如 /panel/servers/12 中的 12。'
                                                             }
                                                             autoComplete={'off'}
                                                         />
@@ -599,11 +599,11 @@ export default function ItemDialog({
                     </Form>
                     <Dialog.Footer>
                         <Button.Text type={'button'} onClick={onClose} disabled={isSubmitting}>
-                            Cancel
+                            取消
                         </Button.Text>
                         <form.AppForm>
                             <form.SubmitButton form={formId}>
-                                {editing ? 'Save changes' : `Create ${noun}`}
+                                {editing ? '保存更改' : `创建${noun}`}
                             </form.SubmitButton>
                         </form.AppForm>
                     </Dialog.Footer>

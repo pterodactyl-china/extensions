@@ -1,4 +1,4 @@
-name: Build
+name: 构建
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_call:
     inputs:
       ref:
-        description: Commit, branch or tag to build. Defaults to the triggering commit.
+        description: 要构建的提交、分支或标签。默认为触发本次工作流的提交。
         type: string
         required: false
 
@@ -15,13 +15,13 @@ permissions:
   contents: read
 
 concurrency:
-  # Keyed by the calling workflow too, so a release build never cancels a push build.
+  # 分组键中也包含调用方工作流，因此发布构建不会取消推送构建。
   group: ${{ github.workflow }}-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   list:
-    name: List extensions
+    name: 列出扩展
     runs-on: ubuntu-24.04
     outputs:
       extensions: ${{ steps.list.outputs.extensions }}
@@ -45,10 +45,9 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.sha }}
 
-      # Extensions build against the panel's SDK, which is not on npm yet. Set the
-      # PANEL_REPOSITORY / PANEL_REF repository variables to build against a fork
-      # or another branch.
-      - name: Check out the panel SDK
+      # 扩展基于面板的 SDK 构建，而该 SDK 尚未发布到 npm。可通过设置
+      # PANEL_REPOSITORY / PANEL_REF 仓库变量，改为基于某个分支仓库或其他分支构建。
+      - name: 检出面板 SDK
         uses: actions/checkout@v4
         with:
           repository: ${{ vars.PANEL_REPOSITORY || 'pterodactyl/panel' }}
@@ -68,33 +67,33 @@ jobs:
           php-version: 8.4
           coverage: none
 
-      - name: Install
+      - name: 安装依赖
         working-directory: ${{ matrix.extension }}
         run: npm ci --no-audit --no-fund
 
-      - name: Build
+      - name: 构建
         working-directory: ${{ matrix.extension }}
         run: npm run build
 
-      - name: Typecheck
+      - name: 类型检查
         working-directory: ${{ matrix.extension }}
         run: npm run typecheck --if-present
 
-      - name: Test
+      - name: 测试
         working-directory: ${{ matrix.extension }}
         run: |
           npm run test --if-present
           npm run contrast --if-present
 
-      - name: Lint PHP
+      - name: PHP 语法检查
         run: |
           find "${{ matrix.extension }}" -name '*.php' -not -path '*/node_modules/*' -print0 \
             | xargs -0 -r -n1 php -l > /dev/null
 
-      - name: Check package
+      - name: 检查扩展包
         run: node scripts/check.mjs "${{ matrix.extension }}"
 
-      - name: Package
+      - name: 打包
         run: |
           node scripts/stage.mjs "${{ matrix.extension }}" out
           cd "out/${{ matrix.extension }}"

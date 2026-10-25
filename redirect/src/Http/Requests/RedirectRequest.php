@@ -47,7 +47,7 @@ class RedirectRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'slug.regex' => 'The slug may only contain lowercase letters, numbers, hyphens and underscores, and must start and end with a letter or number.',
+            'slug.regex' => '短链接名称只能包含小写字母、数字、连字符和下划线，并且必须以字母或数字开头和结尾。',
         ];
     }
 }

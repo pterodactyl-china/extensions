@@ -1,7 +1,7 @@
-// Copies the runtime files of a built extension into <out>/<id>/, ready to zip.
-// Mirrors the panel's `p:extension:pack`: the manifest, routes, database, resources,
-// dist, vendor and the autoloaded source directories - no dotfiles, node_modules or tests.
-// Usage: node scripts/stage.mjs <extension-folder> <out-directory>
+// 把已构建扩展的运行时文件复制到 <out>/<id>/ 中，为打包成 zip 做准备。
+// 与面板的 `p:extension:pack` 保持一致：清单、routes、database、resources、
+// dist、vendor 以及 autoload 的源码目录 —— 不包含点文件、node_modules 和测试。
+// 用法：node scripts/stage.mjs <扩展文件夹> <输出目录>
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -38,4 +38,4 @@ for (const directory of directories) {
     if (fs.existsSync(source)) copy(source, path.join(target, directory));
 }
 
-console.log(`${manifest.id} ${manifest.version} staged in ${path.relative(process.cwd(), target)}`);
+console.log(`${manifest.id} ${manifest.version} 已暂存于 ${path.relative(process.cwd(), target)}`);

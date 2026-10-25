@@ -35,8 +35,8 @@ class DarkThemeProvider extends ExtensionProvider
             // `color` field: a picker in the admin form; the panel validates and stores a
             // canonical hex or oklch() value, and null (cleared) means "use the theme's own".
             ExtensionSettingDefinition::make('accent_color', 'accent_color', null)
-                ->label('Accent colour')
-                ->help('Optional. Only the hue and saturation of the colour you pick are used: the theme chooses the lightness itself so buttons, links and focus rings keep WCAG AA contrast. Clear it for the built-in indigo. Applies everywhere, including the sign-in pages, after a reload.')
+                ->label('强调色')
+                ->help('可选。仅使用你所选颜色的色相与饱和度：主题会自行决定亮度，以保证按钮、链接和焦点框维持 WCAG AA 对比度。清空后恢复为内置的靛蓝色。刷新后全局生效，包括登录页面。')
                 ->color()
                 // public(): the sign-in pages are themed too, and a colour is safe for anyone to read.
                 ->frontend()

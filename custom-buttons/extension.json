@@ -1,14 +1,14 @@
 {
     "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
     "id": "custom-buttons",
-    "name": "Custom Buttons",
+    "name": "自定义按钮",
     "version": "1.0.0",
     "requires": {
         "panel": "^2.0.0-dev",
         "sdk": "^2.0.0-beta.4",
         "php": "^8.3"
     },
-    "description": "Admin-defined buttons and sidebar links on the server page, with server placeholders in the URL, optional egg filtering, icons and colours.",
+    "description": "由管理员定义的按钮与侧边栏链接，显示在服务器页面上，URL 支持服务器占位符，并可按 Egg 过滤，可自定义图标与配色。",
     "author": "Anthony",
     "provider": "CustomButtons\\CustomButtonsProvider",
     "autoload": {
@@ -24,7 +24,7 @@
                 "area": "admin",
                 "path": "custom-buttons",
                 "nav": {
-                    "label": "Custom Buttons",
+                    "label": "自定义按钮",
                     "icon": "puzzle"
                 }
             }

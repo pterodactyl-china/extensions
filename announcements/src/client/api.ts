@@ -4,16 +4,16 @@ export type AnnouncementType = 'info' | 'success' | 'warning' | 'danger';
 export type AnnouncementArea = 'dashboard' | 'server' | 'admin';
 
 export const AREAS: { value: AnnouncementArea; label: string }[] = [
-    { value: 'dashboard', label: 'Dashboard' },
-    { value: 'server', label: 'Server console' },
-    { value: 'admin', label: 'Admin overview' },
+    { value: 'dashboard', label: '仪表盘' },
+    { value: 'server', label: '服务器控制台' },
+    { value: 'admin', label: '管理概览' },
 ];
 
 export const TYPES: { value: AnnouncementType; label: string }[] = [
-    { value: 'info', label: 'Info' },
-    { value: 'success', label: 'Success' },
-    { value: 'warning', label: 'Warning' },
-    { value: 'danger', label: 'Danger' },
+    { value: 'info', label: '信息' },
+    { value: 'success', label: '成功' },
+    { value: 'warning', label: '警告' },
+    { value: 'danger', label: '危险' },
 ];
 
 export interface ActiveAnnouncement {

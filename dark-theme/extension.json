@@ -1,9 +1,9 @@
 {
     "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
     "id": "dark-theme",
-    "name": "Dark Theme",
+    "name": "深色主题",
     "version": "1.0.0",
-    "description": "A deeper, neutral dark theme built purely from design-token overrides, with an admin-selectable accent colour. Doubles as a template for theme authors.",
+    "description": "一款更深沉、中性的深色主题，完全通过覆盖设计令牌实现，并支持管理员自定义强调色。同时可作为主题作者的模板。",
     "author": "Anthony",
     "requires": {
         "panel": "^2.0.0-dev",

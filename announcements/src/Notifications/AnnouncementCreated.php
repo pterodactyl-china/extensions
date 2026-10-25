@@ -25,7 +25,7 @@ class AnnouncementCreated extends Notification implements ShouldQueue
     {
         $message = (new MailMessage)
             ->subject($this->announcement->title)
-            ->greeting('Hello ' . $notifiable->username . ',')
+            ->greeting('你好，' . $notifiable->username . '：')
             ->line($this->announcement->body ?? $this->announcement->title);
 
         if ($this->announcement->url_label && $this->announcement->url_link) {

@@ -40,7 +40,7 @@ export function Banner({ announcement, onDismiss, dismissing }: BannerProps) {
                 )}
                 {announcement.dismissible && (
                     <Button.Text type={'button'} size={'xsmall'} disabled={dismissing} onClick={onDismiss}>
-                        Dismiss
+                        关闭
                     </Button.Text>
                 )}
             </div>

@@ -30,7 +30,7 @@ export function ItemPreview({
     const builtIn =
         kind === 'button' ? (
             <div key={'built-in'} className={'cb:flex cb:gap-2 cb:opacity-60'}>
-                {['Start', 'Restart', 'Stop'].map((name) => (
+                {['启动', '重启', '停止'].map((name) => (
                     <span key={name} className={GHOST_BUTTON}>
                         {name}
                     </span>
@@ -38,7 +38,7 @@ export function ItemPreview({
             </div>
         ) : (
             <Fragment key={'built-in'}>
-                {['Console', 'Files', 'Settings'].map((name) => (
+                {['控制台', '文件', '设置'].map((name) => (
                     <span key={name} className={`${GHOST_LINK} cb:opacity-60`}>
                         {name}
                     </span>
@@ -55,8 +55,8 @@ export function ItemPreview({
                     'cb:flex cb:items-center cb:justify-between cb:gap-3 cb:border-b cb:border-border cb:bg-muted cb:px-3 cb:py-1.5 cb:text-xs cb:text-muted-foreground'
                 }
             >
-                <span className={'cb:font-semibold cb:uppercase cb:tracking-wide'}>Preview</span>
-                <span>{newTab ? 'Opens in a new tab' : 'Opens in the same tab'}</span>
+                <span className={'cb:font-semibold cb:uppercase cb:tracking-wide'}>预览</span>
+                <span>{newTab ? '在新标签页打开' : '在当前标签页打开'}</span>
             </figcaption>
             {/* Decorative: the form fields below carry the same information. */}
             <div aria-hidden={'true'} className={'cb:overflow-x-auto'}>
@@ -120,10 +120,10 @@ interface Filters {
 export function filterSummary(filters: Filters, eggs: AdminMeta['eggs']): string[] {
     const parts: string[] = [];
     if (filters.egg_id !== null) {
-        parts.push(`Egg: ${eggs.find((egg) => egg.id === filters.egg_id)?.name ?? `#${filters.egg_id}`}`);
+        parts.push(`Egg：${eggs.find((egg) => egg.id === filters.egg_id)?.name ?? `#${filters.egg_id}`}`);
     }
-    if (filters.feature) parts.push(`Feature or tag: ${filters.feature}`);
-    if (filters.server_id !== null) parts.push(`Server: ${filters.server_name || `#${filters.server_id}`}`);
+    if (filters.feature) parts.push(`特性或标签：${filters.feature}`);
+    if (filters.server_id !== null) parts.push(`服务器：${filters.server_name || `#${filters.server_id}`}`);
 
     return parts;
 }

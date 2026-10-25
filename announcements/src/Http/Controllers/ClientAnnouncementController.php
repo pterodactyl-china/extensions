@@ -45,7 +45,7 @@ class ClientAnnouncementController
     {
         $announcement = Announcement::query()->findOrFail($id);
 
-        abort_unless($announcement->dismissible, 422, 'This announcement cannot be dismissed.');
+        abort_unless($announcement->dismissible, 422, '该公告不允许关闭。');
 
         Dismissal::query()->firstOrCreate([
             'announcement_id' => $announcement->id,

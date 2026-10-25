@@ -42,20 +42,20 @@ interface Change {
 
 const COPY: Record<ItemKind, { title: string; about: string; noun: string; column: string; emptyTitle: string; empty: string }> = {
     button: {
-        title: 'Console buttons',
-        about: 'Shown with the power buttons on the server console.',
-        noun: 'button',
-        column: 'Button',
-        emptyTitle: 'No buttons yet',
-        empty: 'Add a button to send people from a server to your billing area, a status page, a map or any other link.',
+        title: '控制台按钮',
+        about: '与电源按钮一同显示在服务器控制台上。',
+        noun: '按钮',
+        column: '按钮',
+        emptyTitle: '暂无按钮',
+        empty: '添加一个按钮，把用户从服务器带到你的计费页面、状态页、地图或任何其他链接。',
     },
     sidebar: {
-        title: 'Sidebar items',
-        about: 'Shown in the navigation of every server page.',
-        noun: 'sidebar item',
-        column: 'Sidebar item',
-        emptyTitle: 'No sidebar items yet',
-        empty: 'Add a sidebar item to put a link to your documentation, support or any other page in the server navigation.',
+        title: '侧边栏项目',
+        about: '显示在每个服务器页面的导航中。',
+        noun: '侧边栏项目',
+        column: '侧边栏项目',
+        emptyTitle: '暂无侧边栏项目',
+        empty: '添加一个侧边栏项目，把文档、支持或任何其他页面的链接放进服务器导航。',
     },
 };
 
@@ -99,7 +99,7 @@ function OrderCell({ row }: { row: AdminItem }) {
                     isSecondary
                     className={ICON_BUTTON}
                     data-custom-buttons-move={moveTarget(row.id, direction)}
-                    aria-label={`Move ${row.label} ${direction < 0 ? 'up' : 'down'}`}
+                    aria-label={`将 ${row.label} 向${direction < 0 ? '上' : '下'}移动`}
                     disabled={!canMove(direction)}
                     onClick={() => move(row, direction)}
                 >
@@ -139,7 +139,7 @@ function ShownOnCell({ row }: { row: AdminItem }) {
     return (
         <div className={'cb:min-w-32'}>
             {filters.length === 0 ? (
-                <span>Every server</span>
+                <span>所有服务器</span>
             ) : (
                 <ul className={'cb:m-0 cb:list-none cb:p-0'}>
                     {filters.map((filter) => (
@@ -161,11 +161,11 @@ function ActiveCell({ row }: { row: AdminItem }) {
     return (
         <div className={'cb:flex cb:items-center cb:gap-2'}>
             <label htmlFor={id} className={'cb:sr-only'}>
-                Show {row.label} on servers
+                在服务器上显示 {row.label}
             </label>
             <Switch id={id} checked={row.is_active} onChange={(checked) => setActive(row, checked)} />
             <span aria-hidden={'true'} className={'cb:hidden cb:text-xs cb:text-muted-foreground cb:lg:inline'}>
-                {row.is_active ? 'Active' : 'Hidden'}
+                {row.is_active ? '已启用' : '已隐藏'}
             </span>
         </div>
     );
@@ -181,7 +181,7 @@ function ActionsCell({ row }: { row: AdminItem }) {
                 size={'xsmall'}
                 isSecondary
                 className={ICON_BUTTON}
-                aria-label={`Edit ${row.label}`}
+                aria-label={`编辑 ${row.label}`}
                 onClick={() => edit(row)}
             >
                 <Pencil aria-hidden={'true'} size={14} />
@@ -192,7 +192,7 @@ function ActionsCell({ row }: { row: AdminItem }) {
                 color={'red'}
                 isSecondary
                 className={ICON_BUTTON}
-                aria-label={`Delete ${row.label}`}
+                aria-label={`删除 ${row.label}`}
                 onClick={() => remove(row)}
             >
                 <Trash2 aria-hidden={'true'} size={14} />
@@ -207,7 +207,7 @@ function NewButton({ kind, onClick }: { kind: ItemKind; onClick: () => void }) {
     return (
         <Button type={'button'} onClick={onClick}>
             <Plus aria-hidden={'true'} className={'cb:mr-2 cb:inline cb:size-4 cb:align-[-0.15em]'} />
-            New {COPY[kind].noun}
+            新建{COPY[kind].noun}
         </Button>
     );
 }
@@ -256,7 +256,7 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
         mutationFn: (item: AdminItem) => deleteItem(item.id),
         onSuccess: async (_data, item) => {
             await queryClient.invalidateQueries({ queryKey: ['ext-custom-buttons'] });
-            toast.success(`Deleted "${item.label}".`);
+            toast.success(`已删除「${item.label}」。`);
             setDeleting(null);
         },
         onError: (cause) => toast.error(httpErrorToHuman(cause)),
@@ -279,12 +279,12 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
                 next[from] = neighbour;
 
                 refocus.current = { id: item.id, direction };
-                setAnnouncement(`Moved ${item.label} ${direction < 0 ? 'up' : 'down'}.`);
+                setAnnouncement(`已将 ${item.label} 向${direction < 0 ? '上' : '下'}移动。`);
                 // Number the whole list, saving only the entries whose number changed.
                 change.mutate(next.flatMap((entry, sort) => (entry.sort === sort ? [] : [{ item: entry, patch: { sort } }])));
             },
             setActive(item, active) {
-                setAnnouncement(`${item.label} is now ${active ? 'active' : 'hidden'}.`);
+                setAnnouncement(`${item.label} 已${active ? '启用' : '隐藏'}。`);
                 change.mutate([{ item, patch: { is_active: active } }]);
             },
             edit: setEditing,
@@ -309,11 +309,11 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
 
     const columns = useMemo<TableColumn<AdminItem>[]>(
         () => [
-            { id: 'order', label: hidden('Order'), cell: (row) => <OrderCell row={row} /> },
+            { id: 'order', label: hidden('排序'), cell: (row) => <OrderCell row={row} /> },
             { id: 'item', label: COPY[kind].column, cell: (row) => <ItemCell row={row} /> },
-            { id: 'shown', label: 'Shown on', cell: (row) => <ShownOnCell row={row} /> },
-            { id: 'active', label: 'Active', cell: (row) => <ActiveCell row={row} /> },
-            { id: 'actions', label: hidden('Actions'), cell: (row) => <ActionsCell row={row} /> },
+            { id: 'shown', label: '显示范围', cell: (row) => <ShownOnCell row={row} /> },
+            { id: 'active', label: '启用', cell: (row) => <ActiveCell row={row} /> },
+            { id: 'actions', label: hidden('操作'), cell: (row) => <ActionsCell row={row} /> },
         ],
         [kind]
     );
@@ -374,13 +374,13 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
             <Dialog.Confirm
                 open={confirm.open}
                 onClose={() => setDeleting(null)}
-                title={`Delete ${copy.noun}`}
-                confirm={`Delete ${copy.noun}`}
+                title={`删除${copy.noun}`}
+                confirm={`删除${copy.noun}`}
                 onConfirmed={() => deleting && !remove.isPending && remove.mutate(deleting)}
             >
                 <p className={'cb:m-0 cb:text-sm cb:leading-relaxed cb:text-muted-foreground'}>
-                    This permanently deletes <strong className={'cb:text-foreground'}>{confirm.value?.label}</strong> and
-                    removes it from every server page.
+                    此操作将永久删除 <strong className={'cb:text-foreground'}>{confirm.value?.label}</strong>，
+                    并从所有服务器页面上移除它。
                 </p>
             </Dialog.Confirm>
         </section>
@@ -394,11 +394,11 @@ export default function CustomButtonsScreen() {
     });
 
     return (
-        <PageContentBlock title={'Custom Buttons'}>
+        <PageContentBlock title={'自定义按钮'}>
             <header className={'cb:mb-6'}>
-                <h1 className={'cb:m-0 cb:font-header cb:text-2xl cb:font-semibold cb:text-foreground'}>Custom Buttons</h1>
+                <h1 className={'cb:m-0 cb:font-header cb:text-2xl cb:font-semibold cb:text-foreground'}>自定义按钮</h1>
                 <p className={'cb:m-0 cb:mt-1 cb:text-sm cb:leading-relaxed cb:text-foreground/70'}>
-                    Add your own links to the server console and the server navigation.
+                    把属于你自己的链接添加到服务器控制台与服务器导航中。
                 </p>
             </header>
 
@@ -407,7 +407,7 @@ export default function CustomButtonsScreen() {
                     <div className={'cb:flex cb:flex-wrap cb:items-center cb:justify-between cb:gap-3'}>
                         <span>{httpErrorToHuman(error)}</span>
                         <Button.Text type={'button'} size={'xsmall'} onClick={() => void refetch()}>
-                            Try again
+                            重试
                         </Button.Text>
                     </div>
                 </Alert>

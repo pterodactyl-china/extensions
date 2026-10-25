@@ -5,32 +5,32 @@ export type ItemPosition = 'before' | 'after';
 export type ItemColor = 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'gray';
 
 export const COLORS: { value: ItemColor; label: string }[] = [
-    { value: 'primary', label: 'Primary' },
-    { value: 'success', label: 'Success' },
-    { value: 'warning', label: 'Warning' },
-    { value: 'danger', label: 'Danger' },
-    { value: 'info', label: 'Info' },
-    { value: 'gray', label: 'Gray' },
+    { value: 'primary', label: '主色' },
+    { value: 'success', label: '绿色' },
+    { value: 'warning', label: '黄色' },
+    { value: 'danger', label: '红色' },
+    { value: 'info', label: '蓝色' },
+    { value: 'gray', label: '灰色' },
 ];
 
 /** Position values are relative to the built-in items; these say where that is on screen. */
 export const POSITION_LABELS: Record<ItemKind, Record<ItemPosition, string>> = {
-    button: { before: 'Above the power buttons', after: 'Below the power buttons' },
-    sidebar: { before: 'Before the built-in links', after: 'After the built-in links' },
+    button: { before: '在电源按钮上方', after: '在电源按钮下方' },
+    sidebar: { before: '在内置链接之前', after: '在内置链接之后' },
 };
 
 // Readable names for the placeholder tokens the backend reports in `meta.placeholders`.
 // The backend list decides which placeholders exist; a token without a name here is
 // shown as it is.
 const PLACEHOLDER_NAMES: Record<string, string> = {
-    '{{env.P_SERVER_UUID}}': 'Server UUID',
-    '{{env.P_SERVER_UUID_SHORT}}': 'Short ID',
-    '{{env.P_SERVER_NAME}}': 'Server name',
-    '{{env.P_SERVER_ID}}': 'Server number',
-    '{{env.P_SERVER_ALLOCATION_IP}}': 'IP address',
-    '{{env.P_SERVER_ALLOCATION_PORT}}': 'Port',
-    '{{env.P_SERVER_NODE}}': 'Node name',
-    '{{env.P_SERVER_OWNER}}': 'Owner username',
+    '{{env.P_SERVER_UUID}}': '服务器 UUID',
+    '{{env.P_SERVER_UUID_SHORT}}': '短 ID',
+    '{{env.P_SERVER_NAME}}': '服务器名称',
+    '{{env.P_SERVER_ID}}': '服务器编号',
+    '{{env.P_SERVER_ALLOCATION_IP}}': 'IP 地址',
+    '{{env.P_SERVER_ALLOCATION_PORT}}': '端口',
+    '{{env.P_SERVER_NODE}}': '节点名称',
+    '{{env.P_SERVER_OWNER}}': '所有者用户名',
 };
 
 export const placeholderName = (token: string): string => PLACEHOLDER_NAMES[token] ?? token;

@@ -1,14 +1,14 @@
 {
     "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
     "id": "announcements",
-    "name": "Announcements",
+    "name": "公告",
     "version": "1.0.0",
     "requires": {
         "panel": "^2.0.0-dev",
         "sdk": "^2.0.0-beta.4",
         "php": "^8.3"
     },
-    "description": "Panel-wide announcement banners with colour types, validity windows, per-area targeting and per-user dismissal.",
+    "description": "全站公告横幅，支持类型配色、生效时段、按区域定向展示以及按用户关闭。",
     "author": "Anthony",
     "provider": "Announcements\\AnnouncementsProvider",
     "autoload": {
@@ -24,7 +24,7 @@
                 "area": "admin",
                 "path": "announcements",
                 "nav": {
-                    "label": "Announcements",
+                    "label": "公告",
                     "icon": "megaphone"
                 }
             }

@@ -15,7 +15,7 @@ class AbsoluteHttpUrl implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! is_string($value) || ! self::isValid($value)) {
-            $fail('The :attribute must be an absolute http or https URL.');
+            $fail(':attribute 必须是完整的 http 或 https 网址。');
         }
     }
 

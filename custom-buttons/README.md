@@ -1,50 +1,46 @@
-# Custom Buttons
+# 自定义按钮
 
-Lets admins add their own link buttons and sidebar items to the server page.
+让管理员向服务器页面添加自己的链接按钮与侧边栏项目。
 
-- **Buttons** appear next to the power buttons on the console.
-- **Sidebar items** appear in the server navigation.
-- Each entry has a label, URL, icon, colour, position and an "open in new tab" option,
-  with a live preview while you edit it.
-- Entries are ordered with the up and down arrows in the list, and can be switched off
-  without deleting them.
-- Entries can be limited to one egg, to eggs with a given feature or tag, or to a
-  single server.
+- **按钮**显示在控制台电源按钮旁边。
+- **侧边栏项目**显示在服务器导航中。
+- 每个项目都有名称、网址、图标、配色、位置和「在新标签页打开」选项，编辑时可实时预览。
+- 项目可通过列表中的上下箭头调整顺序，也可以临时停用而无需删除。
+- 项目可限定为某个 Egg、具有某特性或标签的 Egg，或某一台服务器。
 
-## Install
+## 安装
 
-Download [custom-buttons.zip](https://github.com/pterodactyl/extensions/releases/latest/download/custom-buttons.zip)
-from the latest release, then on the panel host:
+从最新版本中下载 [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip)，
+然后在面板所在主机上执行：
 
 ```sh
 php artisan p:extension:install /path/to/custom-buttons.zip --enable
 ```
 
-Reload the panel, then manage entries under Admin > Custom Buttons.
+重新加载面板，随后可在「管理 > 自定义按钮」中管理这些项目。
 
-## URL placeholders
+## 网址占位符
 
-These are replaced with the server's values, URL-encoded, before the link is shown. The
-URL field has a button for each one that adds it where the cursor is:
+以下内容会在链接显示前替换为服务器对应的值（经过 URL 编码）。网址输入框为每个占位符提供了一个按钮，
+点击即可插入到光标所在位置：
 
-| Placeholder | Value |
+| 占位符 | 取值 |
 | --- | --- |
-| `{{env.P_SERVER_UUID}}` | Server UUID |
-| `{{env.P_SERVER_UUID_SHORT}}` | Short server identifier |
-| `{{env.P_SERVER_NAME}}` | Server name |
-| `{{env.P_SERVER_ID}}` | Internal server ID |
-| `{{env.P_SERVER_ALLOCATION_IP}}` | Primary allocation IP |
-| `{{env.P_SERVER_ALLOCATION_PORT}}` | Primary allocation port |
-| `{{env.P_SERVER_NODE}}` | Node name |
-| `{{env.P_SERVER_OWNER}}` | Owner's username |
+| `{{env.P_SERVER_UUID}}` | 服务器 UUID |
+| `{{env.P_SERVER_UUID_SHORT}}` | 服务器短标识 |
+| `{{env.P_SERVER_NAME}}` | 服务器名称 |
+| `{{env.P_SERVER_ID}}` | 服务器内部 ID |
+| `{{env.P_SERVER_ALLOCATION_IP}}` | 主分配 IP |
+| `{{env.P_SERVER_ALLOCATION_PORT}}` | 主分配端口 |
+| `{{env.P_SERVER_NODE}}` | 节点名称 |
+| `{{env.P_SERVER_OWNER}}` | 所有者用户名 |
 
-## Notes
+## 说明
 
-- Only `http://`, `https://` and relative (`/path`) URLs are accepted.
-- Icons are [lucide](https://lucide.dev/icons) names, such as `life-buoy`.
-- Only root administrators can manage entries; every user with access to a server sees
-  the entries that apply to it.
+- 只接受 `http://`、`https://` 以及相对路径（`/path`）形式的网址。
+- 图标使用 [lucide](https://lucide.dev/icons) 的图标名，例如 `life-buoy`。
+- 只有根管理员可以管理项目；任何有权访问某台服务器的用户都能看到适用于该服务器的项目。
 
-## Credit
+## 致谢
 
-Based on the idea of the Custom Buttons plugin for Pelican Panel by Olivier D. and NerdsCorp. Rewritten for the Pterodactyl panel.
+基于 Olivier D. 与 NerdsCorp 为 Pelican Panel 编写的 Custom Buttons 插件思路，为 Pterodactyl 面板重写。

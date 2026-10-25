@@ -51,14 +51,14 @@ const normaliseSlug = (value: string): string => value.toLowerCase().replace(/\s
 const validateSlug = (value: string, taken: ReadonlySet<string>): string | undefined => {
     const slug = value.trim().toLowerCase();
 
-    if (slug === '') return 'Enter a name for the link.';
-    if ([...slug].length > SLUG_MAX) return `Use ${SLUG_MAX} characters or fewer.`;
+    if (slug === '') return '请输入短链接的名称。';
+    if ([...slug].length > SLUG_MAX) return `请使用 ${SLUG_MAX} 个以内的字符。`;
     if (!SLUG_PATTERN.test(slug)) {
         return /^[a-z0-9_-]+$/.test(slug)
-            ? 'Start and end with a letter or number.'
-            : 'Use only letters, numbers, hyphens and underscores.';
+            ? '请以字母或数字开头和结尾。'
+            : '只能使用字母、数字、连字符和下划线。';
     }
-    if (taken.has(slug)) return 'Another link already uses this name.';
+    if (taken.has(slug)) return '已有其他链接使用了该名称。';
 
     return undefined;
 };
@@ -66,23 +66,23 @@ const validateSlug = (value: string, taken: ReadonlySet<string>): string | undef
 const validateTarget = (value: string): string | undefined => {
     const url = value.trim();
 
-    if (url === '') return 'Enter the address this link should open.';
+    if (url === '') return '请输入此链接要打开的地址。';
     if ([...url].length > TARGET_MAX || new TextEncoder().encode(url).length > TARGET_MAX) {
-        return `Use ${TARGET_MAX.toLocaleString()} characters or fewer.`;
+        return `请使用 ${TARGET_MAX.toLocaleString()} 个以内的字符。`;
     }
     // eslint-disable-next-line no-control-regex
-    if (/[\x00-\x20\x7f\\]/.test(url)) return 'Remove spaces and backslashes from the address.';
+    if (/[\x00-\x20\x7f\\]/.test(url)) return '地址中不能包含空格和反斜杠。';
     if (!/^https?:\/\/[^/?#]/i.test(url)) {
-        return 'Enter a full address starting with https:// or http://';
+        return '请输入以 https:// 或 http:// 开头的完整地址';
     }
 
     const authority = url.replace(/^https?:\/\//i, '').split(/[/?#]/)[0] ?? '';
-    if (authority.includes('@')) return 'Addresses with a username or password are not allowed.';
+    if (authority.includes('@')) return '不允许包含用户名或密码的地址。';
 
     const port = /:(\d*)$/.exec(authority);
     const host = port ? authority.slice(0, port.index) : authority;
     if (host === '' || (port && Number(port[1]) > 65535) || (!port && /:[^\]]*$/.test(authority))) {
-        return 'Enter a full address starting with https:// or http://';
+        return '请输入以 https:// 或 http:// 开头的完整地址';
     }
 
     return undefined;
@@ -100,7 +100,7 @@ const serverFieldErrors = (cause: unknown): Partial<Record<'slug' | 'target', st
         if ((field !== 'slug' && field !== 'target') || found[field] || typeof entry.detail !== 'string') continue;
         found[field] =
             field === 'slug' && (entry.meta?.rule === 'unique' || /taken/i.test(entry.detail))
-                ? 'Another link already uses this name.'
+                ? '已有其他链接使用了该名称。'
                 : entry.detail;
     }
 
@@ -121,7 +121,7 @@ const linkBaseOf = (rows: readonly ShortRedirect[]): string => {
 /** "https://panel.example/go/" -> "panel.example" */
 const hostOf = (base: string): string => base.replace(/^https?:\/\//i, '').replace(/\/go\/$/, '');
 
-const clicksLabel = (hits: number): string => `${hits.toLocaleString()} ${hits === 1 ? 'click' : 'clicks'}`;
+const clicksLabel = (hits: number): string => `${hits.toLocaleString()} 次点击`;
 
 const RELATIVE_STEPS: [limit: number, seconds: number, unit: Intl.RelativeTimeFormatUnit][] = [
     [3600, 60, 'minute'],
@@ -133,7 +133,7 @@ const RELATIVE_STEPS: [limit: number, seconds: number, unit: Intl.RelativeTimeFo
 
 const timeAgo = (iso: string): string => {
     const seconds = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
-    if (seconds < 60) return 'just now';
+    if (seconds < 60) return '刚刚';
 
     const [, size, unit] = RELATIVE_STEPS.find(([limit]) => seconds < limit) ?? RELATIVE_STEPS[4]!;
 
@@ -218,20 +218,20 @@ function CopyButton({
             type={'button'}
             size={'xsmall'}
             disabled={disabled}
-            aria-label={copied ? `Copied link ${name}` : `Copy link ${name}`}
+            aria-label={copied ? `已复制链接 ${name}` : `复制链接 ${name}`}
             className={'rdr:shrink-0 rdr:whitespace-nowrap'}
             onClick={(event) => {
                 const button = event.currentTarget;
                 void copyText(text, button).then((ok) => {
                     if (ok) setCopied(true);
-                    else toast.error('Could not copy. Select the link and copy it yourself.');
+                    else toast.error('复制失败，请手动选中链接后复制。');
                 });
             }}
         >
             <span className={ICON_LABEL}>
                 <Icon icon={copied ? Check : Copy} aria-hidden={'true'} className={'rdr:h-3.5 rdr:w-3.5'} />
                 <span aria-live={'polite'} className={compact ? 'rdr:hidden rdr:sm:inline' : undefined}>
-                    {copied ? 'Copied' : 'Copy'}
+                    {copied ? '已复制' : '复制'}
                 </span>
             </span>
         </Button.Text>
@@ -286,7 +286,7 @@ function SlugField({ base, taken, original }: { base: string; taken: ReadonlySet
 
     return (
         <div>
-            <Label htmlFor={id}>Short link</Label>
+            <Label htmlFor={id}>短链接</Label>
             <div className={'rdr:flex rdr:items-stretch'}>
                 <span
                     aria-hidden={'true'}
@@ -318,8 +318,8 @@ function SlugField({ base, taken, original }: { base: string; taken: ReadonlySet
             <p id={`${id}-help`} className={error ? errorClass : helpClass}>
                 {error ??
                     (renamed
-                        ? `Saving renames the link. The old address /go/${original} will stop working.`
-                        : 'A short name people can remember. Letters, numbers, hyphens and underscores.')}
+                        ? `保存后将重命名该链接，旧地址 /go/${original} 将失效。`
+                        : '便于记忆的短名称。仅可使用字母、数字、连字符和下划线。')}
             </p>
             <div
                 className={
@@ -327,7 +327,7 @@ function SlugField({ base, taken, original }: { base: string; taken: ReadonlySet
                 }
             >
                 <div className={'rdr:min-w-0'}>
-                    <p className={'rdr:text-xs rdr:text-muted-foreground'}>Your link</p>
+                    <p className={'rdr:text-xs rdr:text-muted-foreground'}>你的链接</p>
                     <p className={'rdr:truncate rdr:font-mono rdr:text-sm'} title={ready ? base + slug : undefined}>
                         <span className={'rdr:text-muted-foreground'}>{base}</span>
                         {ready ? (
@@ -385,7 +385,7 @@ function LinkDialog({
                 const input = toInput(value);
                 await (current ? updateRedirect(current.id, input) : createRedirect(input));
                 await queryClient.invalidateQueries({ queryKey: ['ext-redirect'] });
-                toast.success(current ? 'Changes saved.' : 'Short link created.');
+                toast.success(current ? '更改已保存。' : '短链接已创建。');
                 onClose();
             } catch (cause) {
                 const fields = serverFieldErrors(cause);
@@ -408,7 +408,7 @@ function LinkDialog({
     return (
         <Dialog
             open={open}
-            title={current ? 'Edit short link' : 'New short link'}
+            title={current ? '编辑短链接' : '新建短链接'}
             preventExternalClose={submitting}
             hideCloseIcon={submitting}
             onClose={onClose}
@@ -444,8 +444,8 @@ function LinkDialog({
                         <field.TextField
                             type={'text'}
                             inputMode={'url'}
-                            label={'Destination'}
-                            description={'The full address this link opens, starting with https://'}
+                            label={'目标地址'}
+                            description={'此链接要打开的完整地址，需以 https:// 开头'}
                             placeholder={'https://discord.gg/example'}
                             autoComplete={'off'}
                             autoCapitalize={'none'}
@@ -458,8 +458,8 @@ function LinkDialog({
                     <form.AppField name={'enabled'}>
                         {(field) => (
                             <field.SwitchField
-                                label={'Enabled'}
-                                description={'Turn off to pause the link without deleting it. Visitors see a not found page.'}
+                                label={'启用'}
+                                description={'关闭后可在不删除的情况下停用该链接，访问者将看到「未找到」页面。'}
                             />
                         )}
                     </form.AppField>
@@ -480,15 +480,15 @@ function LinkDialog({
                             aria-hidden={'true'}
                             className={`rdr:h-4 rdr:w-4 rdr:transition-transform ${showAdvanced ? 'rdr:rotate-90' : ''}`}
                         />
-                        Advanced
+                        高级
                     </button>
                     <div id={advancedId} hidden={!showAdvanced} className={'rdr:mt-3'}>
                         <form.AppField name={'permanent'}>
                             {(field) => (
                                 <field.SwitchField
-                                    label={'Permanent redirect (301)'}
+                                    label={'永久跳转（301）'}
                                     description={
-                                        'Only for destinations that will never change. Browsers remember permanent redirects, so later edits may not reach people who already used the link.'
+                                        '仅适用于永不更改的目标地址。浏览器会记住永久跳转，因此之后的修改可能不会生效于已访问过该链接的人。'
                                     }
                                 />
                             )}
@@ -498,10 +498,10 @@ function LinkDialog({
             </Form>
             <Dialog.Footer>
                 <Button.Text type={'button'} disabled={submitting} onClick={onClose}>
-                    Cancel
+                    取消
                 </Button.Text>
                 <form.AppForm>
-                    <form.SubmitButton form={formId}>{current ? 'Save changes' : 'Create link'}</form.SubmitButton>
+                    <form.SubmitButton form={formId}>{current ? '保存更改' : '创建链接'}</form.SubmitButton>
                 </form.AppForm>
             </Dialog.Footer>
         </Dialog>
@@ -514,12 +514,12 @@ function LinkDialog({
 
 function Usage({ row, inline }: { row: ShortRedirect; inline?: boolean }) {
     if (row.hits === 0 || !row.last_hit_at) {
-        return <span className={'rdr:whitespace-nowrap rdr:text-xs rdr:text-muted-foreground'}>Never used</span>;
+        return <span className={'rdr:whitespace-nowrap rdr:text-xs rdr:text-muted-foreground'}>从未使用</span>;
     }
 
     const last = (
         <time dateTime={row.last_hit_at} title={new Date(row.last_hit_at).toLocaleString()}>
-            Last used {timeAgo(row.last_hit_at)}
+            最近使用于 {timeAgo(row.last_hit_at)}
         </time>
     );
 
@@ -541,11 +541,11 @@ function EnabledToggle({ row, onToggle }: { row: ShortRedirect; onToggle: (enabl
     return (
         <div className={'rdr:flex rdr:items-center rdr:gap-2'}>
             <label htmlFor={id} className={'rdr:sr-only'}>
-                Enable link {row.slug}
+                启用链接 {row.slug}
             </label>
             <Switch id={id} checked={row.enabled} onChange={onToggle} />
             <span aria-hidden={'true'} className={'rdr:hidden rdr:w-6 rdr:text-xs rdr:text-muted-foreground rdr:sm:inline'}>
-                {row.enabled ? 'On' : 'Off'}
+                {row.enabled ? '开' : '关'}
             </span>
         </div>
     );
@@ -591,7 +591,7 @@ export default function RedirectsScreen() {
         },
         onError: (cause, { row }, context) => {
             queryClient.setQueryData(QUERY_KEY, context?.previous);
-            toast.error(`Could not update /go/${row.slug}. ${httpErrorToHuman(cause)}`);
+            toast.error(`无法更新 /go/${row.slug}。${httpErrorToHuman(cause)}`);
         },
         onSettled: () => queryClient.invalidateQueries({ queryKey: ['ext-redirect'] }),
     });
@@ -600,7 +600,7 @@ export default function RedirectsScreen() {
         mutationFn: (row: ShortRedirect) => deleteRedirect(row.id),
         onSuccess: async (_, row) => {
             await queryClient.invalidateQueries({ queryKey: ['ext-redirect'] });
-            toast.success(`Deleted /go/${row.slug}.`);
+            toast.success(`已删除 /go/${row.slug}。`);
             setDeleting(null);
         },
         onError: (cause) => toast.error(httpErrorToHuman(cause)),
@@ -609,7 +609,7 @@ export default function RedirectsScreen() {
     const columns = useMemo<TableColumn<ShortRedirect>[]>(() => {
         const link: TableColumn<ShortRedirect> = {
             id: 'link',
-            label: 'Short link',
+            label: '短链接',
             cell: (row) => (
                 <div className={'rdr:max-w-[40vw] rdr:min-w-0 rdr:sm:max-w-xs rdr:lg:max-w-md rdr:xl:max-w-xl'}>
                     <div className={'rdr:flex rdr:items-center rdr:gap-2'}>
@@ -624,12 +624,12 @@ export default function RedirectsScreen() {
                         <CopyButton text={row.url} name={row.slug} compact />
                         {row.status_code === 301 && (
                             <span
-                                title={'Permanent redirect (301). Browsers remember it.'}
+                                title={'永久跳转（301），浏览器会记住它。'}
                                 className={
                                     'rdr:hidden rdr:shrink-0 rdr:rounded-sm rdr:border rdr:border-border rdr:bg-muted rdr:px-1.5 rdr:py-0.5 rdr:text-xs rdr:text-muted-foreground rdr:sm:inline'
                                 }
                             >
-                                Permanent
+                                永久
                             </span>
                         )}
                     </div>
@@ -638,7 +638,7 @@ export default function RedirectsScreen() {
                         target={'_blank'}
                         rel={'noopener noreferrer'}
                         title={row.target}
-                        aria-label={`Open destination ${row.target} in a new tab`}
+                        aria-label={`在新标签页打开目标地址 ${row.target}`}
                         className={
                             'rdr:mt-0.5 rdr:flex rdr:items-center rdr:gap-1 rdr:text-xs rdr:text-muted-foreground rdr:no-underline rdr:hover:text-foreground'
                         }
@@ -654,38 +654,38 @@ export default function RedirectsScreen() {
                 </div>
             ),
         };
-        const usage: TableColumn<ShortRedirect> = { id: 'usage', label: 'Usage', cell: (row) => <Usage row={row} /> };
+        const usage: TableColumn<ShortRedirect> = { id: 'usage', label: '使用情况', cell: (row) => <Usage row={row} /> };
         const enabled: TableColumn<ShortRedirect> = {
             id: 'enabled',
-            label: 'Enabled',
+            label: '启用',
             cell: (row) => <EnabledToggle row={row} onToggle={(value) => toggle.mutate({ row, enabled: value })} />,
         };
         const actions: TableColumn<ShortRedirect> = {
             id: 'actions',
-            label: <span className={'rdr:sr-only'}>Actions</span>,
+            label: <span className={'rdr:sr-only'}>操作</span>,
             cell: (row) => (
                 <div className={'rdr:flex rdr:justify-end rdr:gap-1'}>
                     <Button.Text
                         type={'button'}
                         size={'xsmall'}
-                        aria-label={`Edit link ${row.slug}`}
+                        aria-label={`编辑链接 ${row.slug}`}
                         onClick={() => setEditing(row)}
                     >
                         <span className={ICON_LABEL}>
                             <Icon icon={Pencil} aria-hidden={'true'} className={'rdr:h-3.5 rdr:w-3.5'} />
-                            <span className={'rdr:hidden rdr:md:inline'}>Edit</span>
+                            <span className={'rdr:hidden rdr:md:inline'}>编辑</span>
                         </span>
                     </Button.Text>
                     <Button.Text
                         type={'button'}
                         size={'xsmall'}
                         color={'red'}
-                        aria-label={`Delete link ${row.slug}`}
+                        aria-label={`删除链接 ${row.slug}`}
                         onClick={() => setDeleting(row)}
                     >
                         <span className={ICON_LABEL}>
                             <Icon icon={Trash2} aria-hidden={'true'} className={'rdr:h-3.5 rdr:w-3.5'} />
-                            <span className={'rdr:hidden rdr:md:inline'}>Delete</span>
+                            <span className={'rdr:hidden rdr:md:inline'}>删除</span>
                         </span>
                     </Button.Text>
                 </div>
@@ -699,30 +699,30 @@ export default function RedirectsScreen() {
     const example = `${base}discord`;
 
     return (
-        <PageContentBlock title={'Redirects'}>
+        <PageContentBlock title={'短链接跳转'}>
             <header
                 className={
                     'rdr:mb-6 rdr:flex rdr:flex-col rdr:gap-3 rdr:sm:flex-row rdr:sm:items-center rdr:sm:justify-between'
                 }
             >
                 <div className={'rdr:min-w-0'}>
-                    <h1 className={'rdr:font-header rdr:text-2xl rdr:font-semibold rdr:text-foreground'}>Redirects</h1>
+                    <h1 className={'rdr:font-header rdr:text-2xl rdr:font-semibold rdr:text-foreground'}>短链接跳转</h1>
                     <p className={'rdr:mt-1 rdr:text-sm rdr:leading-relaxed rdr:text-foreground/70'}>
-                        Short links on your panel that send visitors somewhere else.
+                        面板上的短链接，用于把访问者带到别处。
                     </p>
                 </div>
                 {rows.length > 0 && (
                     <Button className={'rdr:shrink-0'} onClick={() => setEditing('new')}>
-                        New short link
+                        新建短链接
                     </Button>
                 )}
             </header>
 
             {error && !data ? (
-                <Alert type={'danger'} title={'Could not load your short links'}>
+                <Alert type={'danger'} title={'无法加载你的短链接'}>
                     <p>{httpErrorToHuman(error)}</p>
                     <Button.Text size={'xsmall'} className={'rdr:mt-3'} onClick={() => void refetch()}>
-                        Try again
+                        重试
                     </Button.Text>
                 </Alert>
             ) : !data ? (
@@ -741,19 +741,19 @@ export default function RedirectsScreen() {
                         <Icon icon={Link2} aria-hidden={'true'} />
                     </span>
                     <h2 className={'rdr:mt-4 rdr:font-header rdr:text-lg rdr:font-semibold rdr:text-foreground'}>
-                        No short links yet
+                        暂无短链接
                     </h2>
                     <p
                         className={
                             'rdr:mx-auto rdr:mt-2 rdr:max-w-xl rdr:text-sm rdr:leading-relaxed rdr:text-muted-foreground'
                         }
                     >
-                        A short link is an easy address on your panel that sends people to a longer one. For example,{' '}
-                        <code className={'rdr:break-all rdr:font-mono rdr:text-foreground'}>{example}</code> could open
-                        your Discord invite.
+                        短链接是面板上便于记忆的地址，可以把访问者带到更长的地址。例如{' '}
+                        <code className={'rdr:break-all rdr:font-mono rdr:text-foreground'}>{example}</code> 就可以打开
+                        你的 Discord 邀请链接。
                     </p>
                     <Button className={'rdr:mt-6'} onClick={() => setEditing('new')}>
-                        Create a short link
+                        创建一个短链接
                     </Button>
                 </section>
             ) : (
@@ -774,8 +774,8 @@ export default function RedirectsScreen() {
                         <Input
                             ref={filterRef}
                             type={'search'}
-                            aria-label={'Filter short links'}
-                            placeholder={'Filter by name or destination'}
+                            aria-label={'筛选短链接'}
+                            placeholder={'按名称或目标地址筛选'}
                             value={filter}
                             onChange={(event) => setFilter(event.target.value)}
                             onKeyDown={(event) => {
@@ -794,7 +794,7 @@ export default function RedirectsScreen() {
                         keyOf={(row) => String(row.id)}
                         emptyState={
                             <div className={'rdr:text-center rdr:text-sm rdr:text-muted-foreground'}>
-                                <p>No short links match &quot;{filter.trim()}&quot;.</p>
+                                <p>没有匹配「{filter.trim()}」的短链接。</p>
                                 <Button.Text
                                     size={'xsmall'}
                                     className={'rdr:mt-3'}
@@ -803,14 +803,14 @@ export default function RedirectsScreen() {
                                         filterRef.current?.focus();
                                     }}
                                 >
-                                    Clear filter
+                                    清除筛选
                                 </Button.Text>
                             </div>
                         }
                     />
                     {filter.trim() !== '' && visible.length > 0 && (
                         <p aria-live={'polite'} className={'rdr:mt-2 rdr:text-xs rdr:text-muted-foreground'}>
-                            Showing {visible.length} of {rows.length}
+                            显示 {visible.length} / {rows.length} 条
                         </p>
                     )}
                 </>
@@ -830,18 +830,18 @@ export default function RedirectsScreen() {
             <Dialog.Confirm
                 open={confirmation.open}
                 onClose={() => setDeleting(null)}
-                title={'Delete this short link?'}
-                confirm={'Delete link'}
+                title={'删除这个短链接？'}
+                confirm={'删除链接'}
                 onConfirmed={() => {
                     if (confirmation.value && !remove.isPending) remove.mutate(confirmation.value);
                 }}
             >
                 <span className={'rdr:font-mono rdr:font-semibold rdr:break-all'}>/go/{confirmation.value?.slug}</span>{' '}
-                will stop working right away
+                将立即失效
                 {confirmation.value && confirmation.value.hits > 0
-                    ? ` and its count of ${clicksLabel(confirmation.value.hits)} will be lost`
+                    ? `，其 ${clicksLabel(confirmation.value.hits)} 的记录也会一并丢失`
                     : ''}
-                . This cannot be undone.
+                。此操作无法撤销。
             </Dialog.Confirm>
         </PageContentBlock>
     );

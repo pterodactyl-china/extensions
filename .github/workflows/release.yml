@@ -1,17 +1,17 @@
-name: Release
+name: 发布
 
-# Publishes <extension>.zip for every extension to the release of a tag. Asset names are
-# stable, so each README can link to releases/latest/download/<extension>.zip.
+# 为每个扩展发布 <扩展名>.zip 到标签对应的版本。附件名称保持稳定，
+# 因此各 README 可以直接链接到 releases/latest/download/<扩展名>.zip。
 #
-# Runs when a v* tag is pushed. It can also be run by hand for an existing tag, which
-# rebuilds that tag and replaces the assets on its release.
+# 推送 v* 标签时触发。也可以对已有标签手动运行，用于重新构建该标签
+# 并替换其版本中的附件。
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing tag to build and publish, for example v1.0.1.
+        description: 要构建并发布的已有标签，例如 v1.0.1。
         type: string
         required: true
 
@@ -25,7 +25,7 @@ jobs:
       ref: ${{ inputs.tag || github.ref_name }}
 
   release:
-    name: Publish release
+    name: 发布版本
     needs: build
     runs-on: ubuntu-24.04
     env:
@@ -38,9 +38,9 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      # The release may already exist (created from the GitHub UI, or by an earlier run):
-      # then only its assets are replaced.
-      - name: Publish assets
+      # 版本可能已存在（在 GitHub 界面上创建的，或由之前的运行创建的）：
+      # 这种情况下只替换其中的附件。
+      - name: 上传附件
         run: |
           if gh release view "$TAG" > /dev/null 2>&1; then
             gh release upload "$TAG" artifacts/*.zip --clobber

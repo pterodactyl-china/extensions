@@ -26,7 +26,7 @@ class ItemRequest extends FormRequest
                 'required', 'string', 'max:2048',
                 function (string $attribute, mixed $value, \Closure $fail): void {
                     if (! is_string($value) || ! UrlTemplate::templateIsSafe($value)) {
-                        $fail('The URL must start with http://, https:// or a single "/" (relative link).');
+                        $fail('网址必须以 http://、https:// 开头，或以单个 "/" 开头（相对链接）。');
                     }
                 },
             ],

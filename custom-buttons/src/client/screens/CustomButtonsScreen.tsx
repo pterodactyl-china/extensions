@@ -40,7 +40,10 @@ interface Change {
     patch: Partial<AdminItemInput>;
 }
 
-const COPY: Record<ItemKind, { title: string; about: string; noun: string; column: string; emptyTitle: string; empty: string }> = {
+const COPY: Record<
+    ItemKind,
+    { title: string; about: string; noun: string; column: string; emptyTitle: string; empty: string }
+> = {
     button: {
         title: '控制台按钮',
         about: '与电源按钮一同显示在服务器控制台上。',
@@ -124,7 +127,9 @@ function ItemCell({ row }: { row: AdminItem }) {
                 {kind === 'button' ? (
                     sample
                 ) : (
-                    <span className={'cb:inline-flex cb:rounded-sm cb:border cb:border-border cb:text-sm'}>{sample}</span>
+                    <span className={'cb:inline-flex cb:rounded-sm cb:border cb:border-border cb:text-sm'}>
+                        {sample}
+                    </span>
                 )}
             </span>
             <UrlText url={row.url} placeholders={meta.placeholders} />
@@ -281,7 +286,9 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
                 refocus.current = { id: item.id, direction };
                 setAnnouncement(`已将 ${item.label} 向${direction < 0 ? '上' : '下'}移动。`);
                 // Number the whole list, saving only the entries whose number changed.
-                change.mutate(next.flatMap((entry, sort) => (entry.sort === sort ? [] : [{ item: entry, patch: { sort } }])));
+                change.mutate(
+                    next.flatMap((entry, sort) => (entry.sort === sort ? [] : [{ item: entry, patch: { sort } }]))
+                );
             },
             setActive(item, active) {
                 setAnnouncement(`${item.label} 已${active ? '启用' : '隐藏'}。`);
@@ -322,9 +329,14 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
 
     return (
         <section aria-labelledby={headingId}>
-            <div className={'cb:mb-3 cb:flex cb:flex-col cb:gap-3 cb:sm:flex-row cb:sm:items-end cb:sm:justify-between'}>
+            <div
+                className={'cb:mb-3 cb:flex cb:flex-col cb:gap-3 cb:sm:flex-row cb:sm:items-end cb:sm:justify-between'}
+            >
                 <div className={'cb:min-w-0'}>
-                    <h2 id={headingId} className={'cb:m-0 cb:font-header cb:text-lg cb:font-semibold cb:text-foreground'}>
+                    <h2
+                        id={headingId}
+                        className={'cb:m-0 cb:font-header cb:text-lg cb:font-semibold cb:text-foreground'}
+                    >
                         {copy.title}
                     </h2>
                     <p className={'cb:m-0 cb:mt-1 cb:text-sm cb:leading-relaxed cb:text-foreground/70'}>{copy.about}</p>
@@ -347,7 +359,11 @@ function ItemsSection({ kind, data, isFetching }: { kind: ItemKind; data: AdminD
                             <p className={'cb:m-0 cb:font-header cb:text-base cb:font-semibold cb:text-foreground'}>
                                 {copy.emptyTitle}
                             </p>
-                            <p className={'cb:m-0 cb:mt-1 cb:mb-4 cb:text-sm cb:leading-relaxed cb:text-muted-foreground'}>
+                            <p
+                                className={
+                                    'cb:m-0 cb:mt-1 cb:mb-4 cb:text-sm cb:leading-relaxed cb:text-muted-foreground'
+                                }
+                            >
                                 {copy.empty}
                             </p>
                             <NewButton kind={kind} onClick={() => setEditing('new')} />
@@ -416,12 +432,7 @@ export default function CustomButtonsScreen() {
             {data ? (
                 <div className={'cb:grid cb:gap-10'}>
                     {(['button', 'sidebar'] as const).map((kind) => (
-                        <ItemsSection
-                            key={kind}
-                            kind={kind}
-                            data={data}
-                            isFetching={isFetching}
-                        />
+                        <ItemsSection key={kind} kind={kind} data={data} isFetching={isFetching} />
                     ))}
                 </div>
             ) : (

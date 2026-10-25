@@ -11,7 +11,9 @@ const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'extension.json'), 'u
 const target = path.join(out, manifest.id);
 
 const SKIPPED = new Set(['node_modules', 'tests', 'test', 'coverage']);
-const directories = [...new Set(['routes', 'database', 'resources', 'dist', 'vendor', ...Object.values(manifest.autoload ?? {})])];
+const directories = [
+    ...new Set(['routes', 'database', 'resources', 'dist', 'vendor', ...Object.values(manifest.autoload ?? {})]),
+];
 
 const copy = (from, to) => {
     for (const entry of fs.readdirSync(from, { withFileTypes: true })) {

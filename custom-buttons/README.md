@@ -24,16 +24,16 @@ php artisan p:extension:install /path/to/custom-buttons.zip --enable
 以下内容会在链接显示前替换为服务器对应的值（经过 URL 编码）。网址输入框为每个占位符提供了一个按钮，
 点击即可插入到光标所在位置：
 
-| 占位符 | 取值 |
-| --- | --- |
-| `{{env.P_SERVER_UUID}}` | 服务器 UUID |
-| `{{env.P_SERVER_UUID_SHORT}}` | 服务器短标识 |
-| `{{env.P_SERVER_NAME}}` | 服务器名称 |
-| `{{env.P_SERVER_ID}}` | 服务器内部 ID |
-| `{{env.P_SERVER_ALLOCATION_IP}}` | 主分配 IP |
-| `{{env.P_SERVER_ALLOCATION_PORT}}` | 主分配端口 |
-| `{{env.P_SERVER_NODE}}` | 节点名称 |
-| `{{env.P_SERVER_OWNER}}` | 所有者用户名 |
+| 占位符                             | 取值          |
+| ---------------------------------- | ------------- |
+| `{{env.P_SERVER_UUID}}`            | 服务器 UUID   |
+| `{{env.P_SERVER_UUID_SHORT}}`      | 服务器短标识  |
+| `{{env.P_SERVER_NAME}}`            | 服务器名称    |
+| `{{env.P_SERVER_ID}}`              | 服务器内部 ID |
+| `{{env.P_SERVER_ALLOCATION_IP}}`   | 主分配 IP     |
+| `{{env.P_SERVER_ALLOCATION_PORT}}` | 主分配端口    |
+| `{{env.P_SERVER_NODE}}`            | 节点名称      |
+| `{{env.P_SERVER_OWNER}}`           | 所有者用户名  |
 
 ## 说明
 

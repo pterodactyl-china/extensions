@@ -2,12 +2,13 @@
 
 适用于 Pterodactyl 面板（v2）的扩展。每个文件夹即一个扩展。
 
-| 扩展 | 功能 | 下载 |
-| --- | --- | --- |
-| [公告](announcements) | 全站公告横幅，用户可自行关闭。 | [announcements.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/announcements.zip) |
-| [自定义按钮](custom-buttons) | 由管理员定义的链接按钮与服务器页面侧边栏项目。 | [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip) |
-| [深色主题](dark-theme) | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。 | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip) |
-| [短链接跳转](redirect) | 由面板提供的短链接，例如 `/go/discord`。 | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip) |
+| 扩展                         | 功能                                                       | 下载                                                                                                              |
+| ---------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [公告](announcements)        | 全站公告横幅，用户可自行关闭。                             | [announcements.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/announcements.zip)   |
+| [备案信息](beian)            | 在页面底部显示 ICP 备案号、公安备案号与 ICP 许可证。       | [beian.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/beian.zip)                   |
+| [自定义按钮](custom-buttons) | 由管理员定义的链接按钮与服务器页面侧边栏项目。             | [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip) |
+| [深色主题](dark-theme)       | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。 | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip)         |
+| [短链接跳转](redirect)       | 由面板提供的短链接，例如 `/go/discord`。                   | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip)             |
 
 ## 安装扩展
 

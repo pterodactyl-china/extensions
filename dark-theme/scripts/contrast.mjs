@@ -73,7 +73,13 @@ for (const s of ['--background', '--card', '--muted', '--popover', '--secondary'
 }
 check('Text', 'muted-foreground on sunken', c('--muted-foreground'), c('--sunken'), TEXT);
 // .input-help is text-foreground/70; the dimmest place it appears is a dialog (popover).
-check('Text', 'foreground/70 (field help) on popover', over(c('--foreground'), 0.7, c('--popover')), c('--popover'), TEXT);
+check(
+    'Text',
+    'foreground/70 (field help) on popover',
+    over(c('--foreground'), 0.7, c('--popover')),
+    c('--popover'),
+    TEXT
+);
 
 // Brand: as text on surfaces, and as fills under ink.
 for (const s of ['--background', '--card', '--muted', '--popover', '--secondary']) {
@@ -81,18 +87,33 @@ for (const s of ['--background', '--card', '--muted', '--popover', '--secondary'
 }
 check('Brand', 'accent/80 (link hover) on popover', over(c('--accent'), 0.8, c('--popover')), c('--popover'), TEXT);
 check('Brand', 'accent on accent/10 badge over card', c('--accent'), over(c('--accent'), 0.1, c('--card')), TEXT);
-for (const s of ['--background', '--card', '--popover']) check('Brand', `primary text on ${s.slice(2)}`, c('--primary'), c(s), TEXT);
+for (const s of ['--background', '--card', '--popover'])
+    check('Brand', `primary text on ${s.slice(2)}`, c('--primary'), c(s), TEXT);
 check('Brand', 'primary-foreground on primary', c('--primary-foreground'), c('--primary'), TEXT);
-check('Brand', 'primary-foreground on primary/80 over card', c('--primary-foreground'), over(c('--primary'), 0.8, c('--card')), TEXT);
+check(
+    'Brand',
+    'primary-foreground on primary/80 over card',
+    c('--primary-foreground'),
+    over(c('--primary'), 0.8, c('--card')),
+    TEXT
+);
 check('Brand', 'accent-foreground on accent', c('--accent-foreground'), c('--accent'), TEXT);
-for (const s of ['--background', '--card', '--popover']) check('Brand', `focus ring on ${s.slice(2)}`, c('--ring'), c(s), GRAPHIC);
+for (const s of ['--background', '--card', '--popover'])
+    check('Brand', `focus ring on ${s.slice(2)}`, c('--ring'), c(s), GRAPHIC);
 
 // Status colours: solid fill + ink, text on surfaces, text on its own tint.
 for (const status of ['destructive', 'success', 'warning', 'caution']) {
     const fill = c(`--${status}`);
     check('Status', `${status}-foreground on ${status}`, c(`--${status}-foreground`), fill, TEXT);
-    check('Status', `${status}-foreground on ${status}/90 over card`, c(`--${status}-foreground`), over(fill, 0.9, c('--card')), TEXT);
-    for (const s of ['--background', '--card', '--popover']) check('Status', `${status} text on ${s.slice(2)}`, fill, c(s), TEXT);
+    check(
+        'Status',
+        `${status}-foreground on ${status}/90 over card`,
+        c(`--${status}-foreground`),
+        over(fill, 0.9, c('--card')),
+        TEXT
+    );
+    for (const s of ['--background', '--card', '--popover'])
+        check('Status', `${status} text on ${s.slice(2)}`, fill, c(s), TEXT);
     check('Status', `${status} text on ${status}/15 tint over card`, fill, over(fill, 0.15, c('--card')), TEXT);
 }
 
@@ -120,7 +141,13 @@ for (const name of ['red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'
     check('Terminal', `ansi bright-${name}`, c(`--terminal-ansi-bright-${name}`), term, TEXT);
 }
 check('Terminal', 'ansi bright-black (dim text)', c('--terminal-ansi-bright-black'), term, TEXT);
-check('Terminal', 'selection foreground on selection', c('--terminal-selection-foreground'), c('--terminal-selection'), TEXT);
+check(
+    'Terminal',
+    'selection foreground on selection',
+    c('--terminal-selection-foreground'),
+    c('--terminal-selection'),
+    TEXT
+);
 check('Terminal', 'selection on background', c('--terminal-selection'), term, GRAPHIC);
 
 // Editor.
@@ -131,7 +158,13 @@ check('Editor', 'foreground on active line', c('--editor-foreground'), c('--edit
 check('Editor', 'foreground on selection', c('--editor-foreground'), c('--editor-selection'), TEXT);
 check('Editor', 'selected-foreground on selection', c('--editor-selected-foreground'), c('--editor-selection'), TEXT);
 check('Editor', 'foreground on search match', c('--editor-foreground'), c('--editor-search-match'), TEXT);
-check('Editor', 'foreground on selected search match', c('--editor-foreground'), c('--editor-search-match-selected'), TEXT);
+check(
+    'Editor',
+    'foreground on selected search match',
+    c('--editor-foreground'),
+    c('--editor-search-match-selected'),
+    TEXT
+);
 check('Editor', 'foreground on tooltip', c('--editor-foreground'), c('--editor-tooltip'), TEXT);
 check('Editor', 'caret', c('--editor-caret'), editor, GRAPHIC);
 for (const name of ['keyword', 'name', 'function', 'constant', 'definition', 'type', 'operator', 'string', 'invalid']) {
@@ -159,7 +192,8 @@ same('--primary-foreground', INK);
 // continue the page; and the server-rendered theme-color (DarkThemeProvider) must equal the
 // token, because the panel never overwrites a tag an extension registered.
 const darkPalette = luminance(clamp(c('--background'))) < luminance(clamp(c('--foreground')));
-if (tokens['--color-scheme'] !== (darkPalette ? 'dark' : 'light')) drift.push('--color-scheme (does not match the palette)');
+if (tokens['--color-scheme'] !== (darkPalette ? 'dark' : 'light'))
+    drift.push('--color-scheme (does not match the palette)');
 if (ratio(c('--theme-color'), c('--background')) > 1.05) drift.push('--theme-color (no longer matches --background)');
 const providerPath = fileURLToPath(new URL('../src/DarkThemeProvider.php', import.meta.url));
 if (existsSync(providerPath)) {
@@ -173,7 +207,12 @@ if (existsSync(providerPath)) {
 let accentWorst = Infinity;
 let accentFailures = 0;
 for (let h = 0; h < 360; h += 10) {
-    for (const [l, ch] of [[0.3, 0.1], [0.6, 0.25], [0.9, 0.05], [0.5, 0]]) {
+    for (const [l, ch] of [
+        [0.3, 0.1],
+        [0.6, 0.25],
+        [0.9, 0.05],
+        [0.5, 0],
+    ]) {
         const rgb = clamp(oklchToLinear({ l, c: ch, h })).map((v) => Math.round(encode(v) * 255));
         const hex = '#' + rgb.map((v) => v.toString(16).padStart(2, '0')).join('');
         // The settings field stores hex or oklch(); alternate so both parsers are swept.
@@ -203,11 +242,19 @@ if (markdown) {
     for (const r of rows) console.log(`| ${r.group} | ${r.label} | ${r.value.toFixed(2)} | ${r.min} |`);
 } else {
     for (const r of rows) {
-        console.log(`${r.value < r.min ? 'FAIL' : ' ok '}  ${r.value.toFixed(2).padStart(6)}  (>= ${r.min})  ${r.group}: ${r.label}`);
+        console.log(
+            `${r.value < r.min ? 'FAIL' : ' ok '}  ${r.value.toFixed(2).padStart(6)}  (>= ${r.min})  ${r.group}: ${r.label}`
+        );
     }
 }
 console.log('');
-for (const [label, value] of info) console.log(`info  ${value.toFixed(2).padStart(6)}  ${label} (decorative, no requirement)`);
-console.log(`\naccent setting sweep: 144 colours, worst text ratio ${accentWorst.toFixed(2)}, failures ${accentFailures}`);
-console.log(`${rows.length} pairs checked, ${failures.length} below threshold` + (drift.length ? `; color.ts out of sync with ${drift.join(', ')}` : ''));
+for (const [label, value] of info)
+    console.log(`info  ${value.toFixed(2).padStart(6)}  ${label} (decorative, no requirement)`);
+console.log(
+    `\naccent setting sweep: 144 colours, worst text ratio ${accentWorst.toFixed(2)}, failures ${accentFailures}`
+);
+console.log(
+    `${rows.length} pairs checked, ${failures.length} below threshold` +
+        (drift.length ? `; color.ts out of sync with ${drift.join(', ')}` : '')
+);
 process.exit(failures.length || accentFailures || drift.length ? 1 : 0);

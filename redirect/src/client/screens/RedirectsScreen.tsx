@@ -54,9 +54,7 @@ const validateSlug = (value: string, taken: ReadonlySet<string>): string | undef
     if (slug === '') return '请输入短链接的名称。';
     if ([...slug].length > SLUG_MAX) return `请使用 ${SLUG_MAX} 个以内的字符。`;
     if (!SLUG_PATTERN.test(slug)) {
-        return /^[a-z0-9_-]+$/.test(slug)
-            ? '请以字母或数字开头和结尾。'
-            : '只能使用字母、数字、连字符和下划线。';
+        return /^[a-z0-9_-]+$/.test(slug) ? '请以字母或数字开头和结尾。' : '只能使用字母、数字、连字符和下划线。';
     }
     if (taken.has(slug)) return '已有其他链接使用了该名称。';
 
@@ -544,7 +542,10 @@ function EnabledToggle({ row, onToggle }: { row: ShortRedirect; onToggle: (enabl
                 启用链接 {row.slug}
             </label>
             <Switch id={id} checked={row.enabled} onChange={onToggle} />
-            <span aria-hidden={'true'} className={'rdr:hidden rdr:w-6 rdr:text-xs rdr:text-muted-foreground rdr:sm:inline'}>
+            <span
+                aria-hidden={'true'}
+                className={'rdr:hidden rdr:w-6 rdr:text-xs rdr:text-muted-foreground rdr:sm:inline'}
+            >
                 {row.enabled ? '开' : '关'}
             </span>
         </div>
@@ -654,7 +655,11 @@ export default function RedirectsScreen() {
                 </div>
             ),
         };
-        const usage: TableColumn<ShortRedirect> = { id: 'usage', label: '使用情况', cell: (row) => <Usage row={row} /> };
+        const usage: TableColumn<ShortRedirect> = {
+            id: 'usage',
+            label: '使用情况',
+            cell: (row) => <Usage row={row} />,
+        };
         const enabled: TableColumn<ShortRedirect> = {
             id: 'enabled',
             label: '启用',

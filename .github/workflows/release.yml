@@ -6,44 +6,44 @@ name: 发布
 # 推送 v* 标签时触发。也可以对已有标签手动运行，用于重新构建该标签
 # 并替换其版本中的附件。
 on:
-  push:
-    tags: ['v*']
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 要构建并发布的已有标签，例如 v1.0.1。
-        type: string
-        required: true
+    push:
+        tags: ['v*']
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 要构建并发布的已有标签，例如 v1.0.1。
+                type: string
+                required: true
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
-    with:
-      ref: ${{ inputs.tag || github.ref_name }}
-
-  release:
-    name: 发布版本
-    needs: build
-    runs-on: ubuntu-24.04
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-      TAG: ${{ inputs.tag || github.ref_name }}
-    steps:
-      - uses: actions/download-artifact@v4
+    build:
+        uses: ./.github/workflows/build.yml
         with:
-          path: artifacts
-          merge-multiple: true
+            ref: ${{ inputs.tag || github.ref_name }}
 
-      # 版本可能已存在（在 GitHub 界面上创建的，或由之前的运行创建的）：
-      # 这种情况下只替换其中的附件。
-      - name: 上传附件
-        run: |
-          if gh release view "$TAG" > /dev/null 2>&1; then
-            gh release upload "$TAG" artifacts/*.zip --clobber
-          else
-            gh release create "$TAG" artifacts/*.zip --title "$TAG" --generate-notes --verify-tag
-          fi
+    release:
+        name: 发布版本
+        needs: build
+        runs-on: ubuntu-24.04
+        env:
+            GH_TOKEN: ${{ github.token }}
+            GH_REPO: ${{ github.repository }}
+            TAG: ${{ inputs.tag || github.ref_name }}
+        steps:
+            - uses: actions/download-artifact@v4
+              with:
+                  path: artifacts
+                  merge-multiple: true
+
+            # 版本可能已存在（在 GitHub 界面上创建的，或由之前的运行创建的）：
+            # 这种情况下只替换其中的附件。
+            - name: 上传附件
+              run: |
+                  if gh release view "$TAG" > /dev/null 2>&1; then
+                    gh release upload "$TAG" artifacts/*.zip --clobber
+                  else
+                    gh release create "$TAG" artifacts/*.zip --title "$TAG" --generate-notes --verify-tag
+                  fi

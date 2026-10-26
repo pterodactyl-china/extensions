@@ -91,7 +91,7 @@ const validateUrl = (value: string, placeholders: readonly string[]): string | u
     if (url === '') return '请输入此项目要打开的地址。';
     if (url.length > 2048) return '请使用 2048 个以内的字符。';
     for (const token of placeholders) url = url.split(token).join('x');
-    if (/[\u0000- \u007f]/.test(url)) return '地址中不能包含空格。';
+    if (/[\u0000- \u007f]/.test(url))     return '地址中不能包含空格。';
     if (/^https?:\/\/[^/]+/i.test(url) || /^\/(?![/\\])/.test(url)) return undefined;
 
     return '请以 https://、http:// 开头，或以 / 开头指向本面板的页面。';
@@ -111,11 +111,7 @@ const validateServerId = (value: string): string | undefined =>
 // Fields are checked when they lose focus and on save. Once a field shows an error,
 // check it again on every change so the message goes away as soon as it is fixed.
 const recheckOnChange = {
-    onChange: ({
-        fieldApi,
-    }: {
-        fieldApi: { state: { meta: { errorMap: { onBlur?: unknown } } }; validate(cause: 'blur'): unknown };
-    }) => {
+    onChange: ({ fieldApi }: { fieldApi: { state: { meta: { errorMap: { onBlur?: unknown } } }; validate(cause: 'blur'): unknown } }) => {
         if (fieldApi.state.meta.errorMap.onBlur) void fieldApi.validate('blur');
     },
 };
@@ -152,15 +148,7 @@ interface Choice {
 }
 
 /** A small set of options shown all at once, as a radio group bound to the form field. */
-function ChoiceField({
-    legend,
-    choices,
-    className,
-}: {
-    legend: string;
-    choices: readonly Choice[];
-    className: string;
-}) {
+function ChoiceField({ legend, choices, className }: { legend: string; choices: readonly Choice[]; className: string }) {
     const field = useFieldContext<string>();
     const name = useId();
 
@@ -210,18 +198,14 @@ function ChoiceField({
 const COLOR_CHOICES: readonly Choice[] = COLORS.map((color) => ({ ...color, swatch: BUTTON_CLASS[color.value] }));
 
 /** Buttons that add a placeholder to the URL where the cursor is. */
-function PlaceholderChips({
-    placeholders,
-    onInsert,
-}: {
-    placeholders: readonly string[];
-    onInsert: (token: string) => void;
-}) {
+function PlaceholderChips({ placeholders, onInsert }: { placeholders: readonly string[]; onInsert: (token: string) => void }) {
     if (placeholders.length === 0) return null;
 
     return (
         <div className={'cb:mt-2'} role={'group'} aria-label={'把服务器的某个值插入到网址中'}>
-            <p className={'cb:m-0 cb:mb-1.5 cb:text-xs cb:text-foreground/70'}>插入打开链接的这台服务器的值：</p>
+            <p className={'cb:m-0 cb:mb-1.5 cb:text-xs cb:text-foreground/70'}>
+                插入打开链接的这台服务器的值：
+            </p>
             <div className={'cb:flex cb:flex-wrap cb:gap-1.5'}>
                 {placeholders.map((token) => (
                     <button
@@ -364,7 +348,11 @@ export default function ItemDialog({
                     preventExternalClose={isSubmitting}
                     hideCloseIcon={isSubmitting}
                     title={`${editing ? '编辑' : '新建'}${noun}`}
-                    description={isButton ? '与电源按钮一同显示在服务器控制台上的链接。' : '显示在服务器导航中的链接。'}
+                    description={
+                        isButton
+                            ? '与电源按钮一同显示在服务器控制台上的链接。'
+                            : '显示在服务器导航中的链接。'
+                    }
                 >
                     <Form form={form} id={formId} className={'cb:m-0 cb:grid cb:gap-5'}>
                         <form.Subscribe selector={(state) => state.values}>
@@ -490,14 +478,13 @@ export default function ItemDialog({
                         <div className={'cb:grid cb:gap-4 cb:sm:grid-cols-2'}>
                             <form.AppField name={'new_tab'}>
                                 {(field) => (
-                                    <field.SwitchField
-                                        label={'在新标签页打开'}
-                                        description={'保持面板页面不被关闭。'}
-                                    />
+                                    <field.SwitchField label={'在新标签页打开'} description={'保持面板页面不被关闭。'} />
                                 )}
                             </form.AppField>
                             <form.AppField name={'is_active'}>
-                                {(field) => <field.SwitchField label={'启用'} description={'关闭后暂时隐藏它。'} />}
+                                {(field) => (
+                                    <field.SwitchField label={'启用'} description={'关闭后暂时隐藏它。'} />
+                                )}
                             </form.AppField>
                         </div>
 
@@ -516,8 +503,7 @@ export default function ItemDialog({
                                         egg_id: eggIdOf(filters.egg_id),
                                         feature: filters.feature.trim() || null,
                                         server_id: Number.isNaN(serverId) ? null : serverId,
-                                        server_name:
-                                            editing && editing.server_id === serverId ? editing.server_name : null,
+                                        server_name: editing && editing.server_id === serverId ? editing.server_name : null,
                                     },
                                     meta.eggs
                                 );
@@ -553,11 +539,7 @@ export default function ItemDialog({
                                         </button>
                                         <div id={filtersId} hidden={!expanded}>
                                             <div className={'cb:grid cb:gap-5 cb:border-t cb:border-border cb:p-3'}>
-                                                <p
-                                                    className={
-                                                        'cb:m-0 cb:text-xs cb:leading-relaxed cb:text-foreground/70'
-                                                    }
-                                                >
+                                                <p className={'cb:m-0 cb:text-xs cb:leading-relaxed cb:text-foreground/70'}>
                                                     全部留空即在所有服务器上显示。设置了多项筛选时，
                                                     服务器需要同时满足所有条件。
                                                 </p>
@@ -620,7 +602,9 @@ export default function ItemDialog({
                             取消
                         </Button.Text>
                         <form.AppForm>
-                            <form.SubmitButton form={formId}>{editing ? '保存更改' : `创建${noun}`}</form.SubmitButton>
+                            <form.SubmitButton form={formId}>
+                                {editing ? '保存更改' : `创建${noun}`}
+                            </form.SubmitButton>
                         </form.AppForm>
                     </Dialog.Footer>
                 </Dialog>

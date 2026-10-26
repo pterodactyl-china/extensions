@@ -15,7 +15,9 @@
         "Redirect\\": "src"
     },
     "routes": {
-        "root": ["go"]
+        "root": [
+            "go"
+        ]
     },
     "ui": {
         "entry": "dist/client.js",

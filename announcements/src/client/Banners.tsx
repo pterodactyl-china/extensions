@@ -26,22 +26,31 @@ export function Banner({ announcement, onDismiss, dismissing }: BannerProps) {
                 )
             }
         >
-            <div className={'ann:flex ann:flex-wrap ann:items-center ann:gap-x-4 ann:gap-y-2'}>
-                {announcement.body && <span className={'ann:whitespace-pre-line'}>{announcement.body}</span>}
-                {announcement.url_link && announcement.url_label && (
-                    <a
-                        href={announcement.url_link}
-                        target={'_blank'}
-                        rel={'noopener noreferrer'}
-                        className={'ann:underline'}
-                    >
-                        {announcement.url_label}
-                    </a>
-                )}
+            <div className={'ann:flex ann:w-full ann:items-center ann:gap-4'}>
+                <div
+                    className={
+                        'ann:flex ann:min-w-0 ann:flex-1 ann:flex-wrap ann:items-center ann:gap-x-4 ann:gap-y-2'
+                    }
+                >
+                    {announcement.body && <span className={'ann:whitespace-pre-line'}>{announcement.body}</span>}
+                    {announcement.url_link && announcement.url_label && (
+                        <a
+                            href={announcement.url_link}
+                            target={'_blank'}
+                            rel={'noopener noreferrer'}
+                            className={'ann:underline'}
+                        >
+                            {announcement.url_label}
+                        </a>
+                    )}
+                </div>
+                {/* 关闭固定在内容区最右侧，正文多长都不会把它挤走。 */}
                 {announcement.dismissible && (
-                    <Button.Text type={'button'} size={'xsmall'} disabled={dismissing} onClick={onDismiss}>
-                        关闭
-                    </Button.Text>
+                    <div className={'ann:shrink-0'}>
+                        <Button.Text type={'button'} size={'xsmall'} disabled={dismissing} onClick={onDismiss}>
+                            关闭
+                        </Button.Text>
+                    </div>
                 )}
             </div>
         </Alert>

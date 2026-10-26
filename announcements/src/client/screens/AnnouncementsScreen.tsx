@@ -186,7 +186,9 @@ const validateUrlTyping = (value: string): string | undefined => {
     if (url === '') return undefined;
     if (url.length > 2048) return '地址请控制在 2048 个字符以内。';
     if (/\s/.test(url)) return '网址中不能包含空格。';
-    const couldBecomeValid = ['http://', 'https://'].some((scheme) => url.startsWith(scheme) || scheme.startsWith(url));
+    const couldBecomeValid = ['http://', 'https://'].some(
+        (scheme) => url.startsWith(scheme) || scheme.startsWith(url)
+    );
 
     return couldBecomeValid ? undefined : '地址需以 http:// 或 https:// 开头';
 };
@@ -306,7 +308,10 @@ function TypePicker({ value, onChange }: { value: AnnouncementType; onChange: (v
                                 onChange={() => onChange(type.value)}
                                 className={'ann:sr-only'}
                             />
-                            <TypeIcon aria-hidden={'true'} className={`ann:size-4 ann:shrink-0 ${style.iconColor}`} />
+                            <TypeIcon
+                                aria-hidden={'true'}
+                                className={`ann:size-4 ann:shrink-0 ${style.iconColor}`}
+                            />
                             <span className={'ann:min-w-0 ann:flex-1'}>{type.label}</span>
                             {selected && (
                                 <span
@@ -395,11 +400,7 @@ function Preview({ values }: { values: FormState }) {
                 'ann:top-0 ann:z-10 ann:[@media(min-height:720px)]:sticky',
             ].join(' ')}
         >
-            <p
-                className={
-                    'ann:mb-2 ann:text-xs ann:font-medium ann:uppercase ann:tracking-wide ann:text-muted-foreground'
-                }
-            >
+            <p className={'ann:mb-2 ann:text-xs ann:font-medium ann:uppercase ann:tracking-wide ann:text-muted-foreground'}>
                 预览
             </p>
             <div inert className={'ann:max-h-40 ann:overflow-y-auto'}>
@@ -623,7 +624,9 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                                                         list={`${optionsId}-icons`}
                                                         maxLength={64}
                                                         placeholder={'life-buoy'}
-                                                        description={'可选，显示在标题之前。输入即可搜索图标名称。'}
+                                                        description={
+                                                            '可选，显示在标题之前。输入即可搜索图标名称。'
+                                                        }
                                                         autoComplete={'off'}
                                                         autoCapitalize={'none'}
                                                         spellCheck={false}
@@ -759,7 +762,9 @@ function EditDialog({ editing, open, onClose }: { editing: Announcement | 'new';
                     取消
                 </Button.Text>
                 <form.AppForm>
-                    <form.SubmitButton form={formId}>{editing === 'new' ? '创建公告' : '保存更改'}</form.SubmitButton>
+                    <form.SubmitButton form={formId}>
+                        {editing === 'new' ? '创建公告' : '保存更改'}
+                    </form.SubmitButton>
                 </form.AppForm>
             </Dialog.Footer>
         </Dialog>
@@ -861,7 +866,9 @@ export default function AnnouncementsScreen() {
                 }
             >
                 <div className={'ann:min-w-0'}>
-                    <h1 className={'ann:font-header ann:text-2xl ann:font-semibold ann:text-foreground'}>公告</h1>
+                    <h1 className={'ann:font-header ann:text-2xl ann:font-semibold ann:text-foreground'}>
+                        公告
+                    </h1>
                     <p className={'ann:mt-1 ann:text-sm ann:leading-relaxed ann:text-foreground/70'}>
                         向所有使用面板的用户展示的横幅。
                     </p>
@@ -1034,15 +1041,21 @@ export default function AnnouncementsScreen() {
                     open={emailDialog.open}
                     onClose={() => setEmailing(null)}
                     title={'通过邮件发送此公告'}
-                    confirm={userCount === null ? '发送给所有用户' : `发送给 ${userCount.toLocaleString()} 位用户`}
+                    confirm={
+                        userCount === null
+                            ? '发送给所有用户'
+                            : `发送给 ${userCount.toLocaleString()} 位用户`
+                    }
                     pending={email.isPending}
                     onConfirm={() => emailDialog.value && email.mutate(emailDialog.value.id)}
                 >
                     <p>
-                        将向 <Strong>{audience}</Strong> 发送邮件，内容为 <Strong>{emailDialog.value.title}</Strong>
-                        ，无论对方是否已关闭横幅。
+                        将向 <Strong>{audience}</Strong> 发送邮件，内容为{' '}
+                        <Strong>{emailDialog.value.title}</Strong>，无论对方是否已关闭横幅。
                     </p>
-                    <p>邮件包含标题、正文和链接。发送后无法撤回，再次发送会给所有人重复发送一次。</p>
+                    <p>
+                        邮件包含标题、正文和链接。发送后无法撤回，再次发送会给所有人重复发送一次。
+                    </p>
                 </ConfirmDialog>
             )}
         </PageContentBlock>

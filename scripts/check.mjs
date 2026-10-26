@@ -13,8 +13,7 @@ if (manifest.id !== folder) errors.push(`extension.json 中的 id "${manifest.id
 if (!/^\d+\.\d+\.\d+/.test(manifest.version ?? '')) errors.push('extension.json 需要一个语义化版本号');
 
 const pkg = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
-if (pkg.version !== manifest.version)
-    errors.push(`package.json 的版本 ${pkg.version} 与 extension.json 的 ${manifest.version} 不一致`);
+if (pkg.version !== manifest.version) errors.push(`package.json 的版本 ${pkg.version} 与 extension.json 的 ${manifest.version} 不一致`);
 
 if (manifest.ui?.entry && !fs.existsSync(path.join(dir, manifest.ui.entry))) {
     errors.push(`${manifest.ui.entry} 不存在 —— 请先执行构建`);

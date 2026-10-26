@@ -65,7 +65,9 @@ export function ItemPreview({
                         {order}
                     </div>
                 ) : (
-                    <div className={'cb:flex cb:min-w-max cb:items-center cb:bg-card cb:px-2 cb:text-sm'}>{order}</div>
+                    <div className={'cb:flex cb:min-w-max cb:items-center cb:bg-card cb:px-2 cb:text-sm'}>
+                        {order}
+                    </div>
                 )}
             </div>
         </figure>

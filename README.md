@@ -9,6 +9,7 @@
 | [自定义按钮](custom-buttons) | 由管理员定义的链接按钮与服务器页面侧边栏项目。             | [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip) |
 | [深色主题](dark-theme)       | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。 | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip)         |
 | [短链接跳转](redirect)       | 由面板提供的短链接，例如 `/go/discord`。                   | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip)             |
+| [连续端口](contiguous-ports) | 服务器「网络」页一次创建多个连续端口，替换原生「新建分配」。 | [contiguous-ports.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/contiguous-ports.zip) |
 
 ## 安装扩展
 

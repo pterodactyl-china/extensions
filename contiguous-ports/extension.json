@@ -1,0 +1,23 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "contiguous-ports",
+    "name": "连续端口",
+    "version": "1.0.0",
+    "description": "在服务器「网络」页一次分配多个连续端口：可指定数量与起始端口，自动跳过已占用端口。",
+    "author": "vlssu",
+    "requires": {
+        "panel": "^2.0.0-dev",
+        "sdk": ">=2.0.0-beta.3 <3.0",
+        "php": "^8.3"
+    },
+    "provider": "ContiguousPorts\\ContiguousPortsProvider",
+    "autoload": {
+        "ContiguousPorts\\": "src"
+    },
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "cpt",
+        "screens": []
+    }
+}

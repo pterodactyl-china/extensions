@@ -1,0 +1,40 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "ai-assistant",
+    "name": "AI 助手",
+    "version": "1.0.0",
+    "description": "在服务器页集成 AI 助手：结合控制台日志诊断报错、生成修复建议；命令执行受后台白名单与面板权限双重限制。",
+    "author": "pterodactyl-china",
+    "requires": {
+        "panel": "^2.0.0-dev",
+        "sdk": ">=2.0.0-beta.3 <3.0",
+        "php": "^8.3"
+    },
+    "provider": "AiAssistant\\AiAssistantProvider",
+    "autoload": {
+        "AiAssistant\\": "src"
+    },
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "aia",
+        "screens": [
+            {
+                "id": "ai-assistant",
+                "area": "server",
+                "path": "ai-assistant",
+                "nav": {
+                    "label": "AI 助手"
+                }
+            },
+            {
+                "id": "admin-ai-assistant",
+                "area": "admin",
+                "path": "ai-assistant",
+                "nav": {
+                    "label": "AI 助手"
+                }
+            }
+        ]
+    }
+}

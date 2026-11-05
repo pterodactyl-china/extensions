@@ -10,8 +10,8 @@
 | [深色主题](dark-theme)       | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。 | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip)         |
 | [短链接跳转](redirect)       | 由面板提供的短链接，例如 `/go/discord`。                   | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip)             |
 | [连续端口](contiguous-ports) | 服务器「网络」页一次创建多个连续端口，替换原生「新建分配」。 | [contiguous-ports.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/contiguous-ports.zip) |
-| [AI 助手](ai-assistant)      | 结合控制台日志诊断报错、生成修复建议，命令执行受白名单与权限限制。 | [ai-assistant.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/ai-assistant.zip) |
-| [预设切换](egg-switcher)     | 服务器「启动」页切换预设，受 Nest、预设标签与子用户权限限制。 | [egg-switcher.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/egg-switcher.zip) |
+| [AI 助手](ai-assistant)      | 结合控制台日志与服务器文件诊断报错；支持工具调用、联网搜索、用户自带 Key；命令与写入均需确认。 | [ai-assistant.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/ai-assistant.zip) |
+| [预设切换](egg-switcher)     | 服务器「启动」页切换预设；按预设标签限定范围，可配置是否允许跨标签，受子用户权限控制。 | [egg-switcher.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/egg-switcher.zip) |
 
 ## 安装扩展
 

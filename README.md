@@ -2,16 +2,16 @@
 
 适用于 Pterodactyl 面板（v2）的扩展。每个文件夹即一个扩展。
 
-| 扩展                         | 功能                                                                                           | 下载                                                                                                                  |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [公告](announcements)        | 全站公告横幅，用户可自行关闭。                                                                 | [announcements.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/announcements.zip)       |
-| [备案信息](beian)            | 在页面底部显示 ICP 备案号、公安备案号与 ICP 许可证。                                           | [beian.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/beian.zip)                       |
-| [自定义按钮](custom-buttons) | 由管理员定义的链接按钮与服务器页面侧边栏项目。                                                 | [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip)     |
-| [深色主题](dark-theme)       | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。                                     | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip)             |
-| [短链接跳转](redirect)       | 由面板提供的短链接，例如 `/go/discord`。                                                       | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip)                 |
-| [连续端口](contiguous-ports) | 服务器「网络」页一次创建多个连续端口，替换原生「新建分配」。                                   | [contiguous-ports.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/contiguous-ports.zip) |
-| [AI 助手](ai-assistant)      | 结合控制台日志与服务器文件诊断报错；支持工具调用、联网搜索、用户自带 Key；命令与写入均需确认。 | [ai-assistant.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/ai-assistant.zip)         |
-| [预设切换](egg-switcher)     | 服务器「启动」页切换预设；按预设标签限定范围，可配置是否允许跨标签，受子用户权限控制。         | [egg-switcher.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/egg-switcher.zip)         |
+| 扩展                         | 功能                                                         | 下载                                                                                                                  |
+| ---------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| [公告](announcements)        | 全站公告横幅，用户可自行关闭。                               | [announcements.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/announcements.zip)       |
+| [备案信息](beian)            | 在页面底部显示 ICP 备案号、公安备案号与 ICP 许可证。         | [beian.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/beian.zip)                       |
+| [自定义按钮](custom-buttons) | 由管理员定义的链接按钮与服务器页面侧边栏项目。               | [custom-buttons.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/custom-buttons.zip)     |
+| [深色主题](dark-theme)       | 一款更深沉、中性的深色主题，同时可作为编写自有主题的模板。   | [dark-theme.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/dark-theme.zip)             |
+| [短链接跳转](redirect)       | 由面板提供的短链接，例如 `/go/discord`。                     | [redirect.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/redirect.zip)                 |
+| [连续端口](contiguous-ports) | 服务器「网络」页一次创建多个连续端口，替换原生「新建分配」。 | [contiguous-ports.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/contiguous-ports.zip) |
+| [AI 助手](ai-assistant)      | 日志与文件排障，支持工具调用、联网搜索与自带 Key。           | [ai-assistant.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/ai-assistant.zip)         |
+| [预设切换](egg-switcher)     | 启动页切换预设，按标签限定范围，可配置跨标签。               | [egg-switcher.zip](https://github.com/pterodactyl-china/extensions/releases/latest/download/egg-switcher.zip)         |
 
 ## 安装扩展
 

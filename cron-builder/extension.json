@@ -1,0 +1,23 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "cron-builder",
+    "name": "计划任务时间",
+    "version": "1.0.0",
+    "description": "在计划任务的 cron 输入上方提供可视化时间选择，默认开启，可随时切回手写 cron。",
+    "author": "vlssu",
+    "requires": {
+        "panel": "^2.0.0-dev",
+        "sdk": "^2.0.0-beta.6",
+        "php": "^8.3"
+    },
+    "provider": "CronBuilder\\CronBuilderProvider",
+    "autoload": {
+        "CronBuilder\\": "src"
+    },
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "crb",
+        "screens": []
+    }
+}

@@ -2,3 +2,8 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(eco);
 @import '@pterodactyl/sdk/theme.css';
 @source './**/*.{ts,tsx}';
+
+/* 弹窗与浮层会盖住右上角的提示条，把它提到最上层。 */
+[data-sonner-toaster] {
+    z-index: 2147483000 !important;
+}

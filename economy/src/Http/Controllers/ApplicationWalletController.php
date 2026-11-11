@@ -52,11 +52,17 @@ class ApplicationWalletController
         $kind = (string) ($data['kind'] ?? '') ?: 'api';
         $reference = (string) ($data['reference'] ?? '') ?: null;
 
-        // 第三方扣减同样要够付，扣成负数只保留给「实际用量超出预估」这一种情况。
-        if ($amount < 0 && !$this->wallet->canAfford($user, -$amount)) {
-            return new JsonResponse([
-                'message' => sprintf('余额不足：当前 %d，无法扣减 %d。', $this->wallet->balance($user), -$amount),
-            ], 422);
+        // 第三方扣减同样最多扣到 0，余额不足的部分不再追。
+        if ($amount < 0) {
+            $balance = $this->wallet->balance($user);
+
+            if ($balance <= 0) {
+                return new JsonResponse([
+                    'message' => sprintf('该用户余额为 %d，已经扣到 0 或以下，无需再扣。', $balance),
+                ], 422);
+            }
+
+            $amount = -min(-$amount, $balance);
         }
 
         try {

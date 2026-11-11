@@ -110,11 +110,22 @@ class AdminWalletController
         $description = (string) ($data['description'] ?? '') ?: '管理员调整';
         $reference = (string) ($data['reference'] ?? '') ?: 'admin:'.$user->id.':'.uniqid('', true);
 
-        // 手工扣减也要够付：允许负数只针对「实际用量超出预估」，不是给人工操作开口子。
-        if ($amount < 0 && !$this->wallet->canAfford($user, -$amount)) {
-            return new JsonResponse([
-                'message' => sprintf('余额不足：当前 %d，无法扣减 %d。', $this->wallet->balance($user), -$amount),
-            ], 422);
+        // 手工扣减最多扣到 0：余额不足时只扣剩下的部分，不再往下扣成负数。
+        if ($amount < 0) {
+            $balance = $this->wallet->balance($user);
+
+            if ($balance <= 0) {
+                return new JsonResponse([
+                    'message' => sprintf('该用户余额为 %d，已经扣到 0 或以下，无需再扣。', $balance),
+                ], 422);
+            }
+
+            $requested = -$amount;
+            $amount = -min($requested, $balance);
+
+            if ($amount !== -$requested) {
+                $description .= sprintf('（申请扣 %d，余额只有 %d，已扣至 0）', $requested, $balance);
+            }
         }
 
         try {
@@ -168,22 +179,31 @@ class AdminWalletController
                 continue;
             }
 
-            if ($amount < 0 && !$this->wallet->canAfford($user, -$amount)) {
-                $failed[] = [
-                    'id' => $id,
-                    'username' => $user->username,
-                    'message' => sprintf('余额不足：当前 %d，无法扣减 %d。', $this->wallet->balance($user), -$amount),
-                ];
+            // 扣减最多扣到 0；已经是 0 或负数的用户跳过，不再往下扣。
+            $delta = $amount;
 
-                continue;
+            if ($amount < 0) {
+                $balance = $this->wallet->balance($user);
+
+                if ($balance <= 0) {
+                    $failed[] = [
+                        'id' => $id,
+                        'username' => $user->username,
+                        'message' => sprintf('余额为 %d，已扣到 0 或以下，已跳过。', $balance),
+                    ];
+
+                    continue;
+                }
+
+                $delta = -min(-$amount, $balance);
             }
 
             try {
                 $reference = 'admin:batch:'.$id.':'.uniqid('', true);
 
-                $entry = $amount > 0
-                    ? $this->wallet->deposit($user, $amount, 'admin', $description, $reference)
-                    : $this->wallet->withdraw($user, -$amount, 'admin', $description, $reference);
+                $entry = $delta > 0
+                    ? $this->wallet->deposit($user, $delta, 'admin', $description, $reference)
+                    : $this->wallet->withdraw($user, -$delta, 'admin', $description, $reference);
 
                 $adjusted[] = [
                     'id' => $id,

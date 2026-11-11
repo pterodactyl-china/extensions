@@ -223,7 +223,13 @@ export default function AdminEconomyScreen() {
                 description: note.trim() === '' ? undefined : note.trim(),
             });
 
-            toast.success(`已调整，当前余额 ${result.balance}。`);
+            const applied = result.entry?.amount ?? value;
+
+            toast.success(
+                applied === value
+                    ? `已调整 ${applied > 0 ? '+' : ''}${applied}，当前余额 ${result.balance}。`
+                    : `余额不足，已按实际扣减 ${applied}，当前余额 ${result.balance}。`
+            );
             setTarget(null);
             await queryClient.invalidateQueries({ queryKey: ['ext-economy', 'users'] });
         } catch (cause) {

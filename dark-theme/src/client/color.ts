@@ -100,8 +100,7 @@ export const luminance = ([r, g, b]: Rgb): number => {
 /** WCAG 2.x contrast ratio between two luminances (order does not matter). */
 export const contrast = (a: number, b: number): number => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-export const formatOklch = ({ l, c, h }: Oklch): string =>
-    `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)})`;
+export const formatOklch = ({ l, c, h }: Oklch): string => `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)})`;
 
 /**
  * The lightest surface this theme puts accent-coloured text on (`--secondary`), and the

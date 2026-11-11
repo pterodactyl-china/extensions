@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // 旧版本用过的文件名执行过同一批建表，表已存在就跳过。
+        if (Schema::hasTable('ext_redirect_redirects')) {
+            return;
+        }
+
         Schema::create('ext_redirect_redirects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug', 64)->unique();

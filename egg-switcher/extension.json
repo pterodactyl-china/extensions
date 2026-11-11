@@ -1,0 +1,33 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "egg-switcher",
+    "name": "预设切换",
+    "version": "1.0.0",
+    "description": "在服务器「启动」页切换预设（egg）：保留同名变量、自动同步 Wings，受预设标签与子用户权限限制。",
+    "author": "vlssu",
+    "requires": {
+        "panel": "^2.0.0-dev",
+        "sdk": "^2.0.0-beta.6",
+        "php": "^8.3"
+    },
+    "provider": "EggSwitcher\\EggSwitcherProvider",
+    "autoload": {
+        "EggSwitcher\\": "src"
+    },
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "egs",
+        "screens": [
+            {
+                "id": "admin-egg-switcher",
+                "area": "admin",
+                "path": "egg-switcher",
+                "nav": {
+                    "label": "预设切换",
+                    "icon": "egg"
+                }
+            }
+        ]
+    }
+}

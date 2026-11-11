@@ -1,106 +1,106 @@
 name: 构建
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-  workflow_call:
-    inputs:
-      ref:
-        description: 要构建的提交、分支或标签。默认为触发本次工作流的提交。
-        type: string
-        required: false
+    push:
+        branches: [main]
+    pull_request:
+    workflow_call:
+        inputs:
+            ref:
+                description: 要构建的提交、分支或标签。默认为触发本次工作流的提交。
+                type: string
+                required: false
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  # 分组键中也包含调用方工作流，因此发布构建不会取消推送构建。
-  group: ${{ github.workflow }}-${{ inputs.ref || github.ref }}
-  cancel-in-progress: true
+    # 分组键中也包含调用方工作流，因此发布构建不会取消推送构建。
+    group: ${{ github.workflow }}-${{ inputs.ref || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  list:
-    name: 列出扩展
-    runs-on: ubuntu-24.04
-    outputs:
-      extensions: ${{ steps.list.outputs.extensions }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || github.sha }}
-      - id: list
-        run: echo "extensions=$(node scripts/extensions.mjs)" >> "$GITHUB_OUTPUT"
+    list:
+        name: 列出扩展
+        runs-on: ubuntu-24.04
+        outputs:
+            extensions: ${{ steps.list.outputs.extensions }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.ref || github.sha }}
+            - id: list
+              run: echo "extensions=$(node scripts/extensions.mjs)" >> "$GITHUB_OUTPUT"
 
-  build:
-    name: ${{ matrix.extension }}
-    needs: list
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        extension: ${{ fromJson(needs.list.outputs.extensions) }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || github.sha }}
+    build:
+        name: ${{ matrix.extension }}
+        needs: list
+        runs-on: ubuntu-24.04
+        strategy:
+            fail-fast: false
+            matrix:
+                extension: ${{ fromJson(needs.list.outputs.extensions) }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: ${{ inputs.ref || github.sha }}
 
-      # 扩展基于面板的 SDK 构建，而该 SDK 尚未发布到 npm。可通过设置
-      # PANEL_REPOSITORY / PANEL_REF 仓库变量，改为基于某个分支仓库或其他分支构建。
-      - name: 检出面板 SDK
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ vars.PANEL_REPOSITORY || 'pterodactyl/panel' }}
-          ref: ${{ vars.PANEL_REF || '2.0-develop' }}
-          path: .panel
-          sparse-checkout: packages/sdk
-          persist-credentials: false
+            # 扩展基于面板的 SDK 构建，而该 SDK 尚未发布到 npm。可通过设置
+            # PANEL_REPOSITORY / PANEL_REF 仓库变量，改为基于某个分支仓库或其他分支构建。
+            - name: 检出面板 SDK
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ vars.PANEL_REPOSITORY || 'pterodactyl/panel' }}
+                  ref: ${{ vars.PANEL_REF || '2.0-develop' }}
+                  path: .panel
+                  sparse-checkout: packages/sdk
+                  persist-credentials: false
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: ${{ matrix.extension }}/package-lock.json
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+                  cache-dependency-path: ${{ matrix.extension }}/package-lock.json
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.4
-          coverage: none
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+                  coverage: none
 
-      - name: 安装依赖
-        working-directory: ${{ matrix.extension }}
-        run: npm ci --no-audit --no-fund
+            - name: 安装依赖
+              working-directory: ${{ matrix.extension }}
+              run: npm ci --no-audit --no-fund
 
-      - name: 构建
-        working-directory: ${{ matrix.extension }}
-        run: npm run build
+            - name: 构建
+              working-directory: ${{ matrix.extension }}
+              run: npm run build
 
-      - name: 类型检查
-        working-directory: ${{ matrix.extension }}
-        run: npm run typecheck --if-present
+            - name: 类型检查
+              working-directory: ${{ matrix.extension }}
+              run: npm run typecheck --if-present
 
-      - name: 测试
-        working-directory: ${{ matrix.extension }}
-        run: |
-          npm run test --if-present
-          npm run contrast --if-present
+            - name: 测试
+              working-directory: ${{ matrix.extension }}
+              run: |
+                  npm run test --if-present
+                  npm run contrast --if-present
 
-      - name: PHP 语法检查
-        run: |
-          find "${{ matrix.extension }}" -name '*.php' -not -path '*/node_modules/*' -print0 \
-            | xargs -0 -r -n1 php -l > /dev/null
+            - name: PHP 语法检查
+              run: |
+                  find "${{ matrix.extension }}" -name '*.php' -not -path '*/node_modules/*' -print0 \
+                    | xargs -0 -r -n1 php -l > /dev/null
 
-      - name: 检查扩展包
-        run: node scripts/check.mjs "${{ matrix.extension }}"
+            - name: 检查扩展包
+              run: node scripts/check.mjs "${{ matrix.extension }}"
 
-      - name: 打包
-        run: |
-          node scripts/stage.mjs "${{ matrix.extension }}" out
-          cd "out/${{ matrix.extension }}"
-          zip -q -r "../${{ matrix.extension }}.zip" .
+            - name: 打包
+              run: |
+                  node scripts/stage.mjs "${{ matrix.extension }}" out
+                  cd "out/${{ matrix.extension }}"
+                  zip -q -r "../${{ matrix.extension }}.zip" .
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.extension }}
-          path: out/${{ matrix.extension }}.zip
-          if-no-files-found: error
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ matrix.extension }}
+                  path: out/${{ matrix.extension }}.zip
+                  if-no-files-found: error

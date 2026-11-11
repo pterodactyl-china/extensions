@@ -1,0 +1,42 @@
+{
+    "$schema": "./node_modules/@pterodactyl/sdk/manifest.schema.json",
+    "id": "economy",
+    "name": "经济系统",
+    "version": "1.0.0",
+    "description": "统一积分账本：向其它扩展提供公共 Wallet 契约，余额、扣款、转账与流水集中管理，避免每个插件各记一套。",
+    "author": "pterodactyl-china",
+    "requires": {
+        "panel": "^2.0.0-dev",
+        "sdk": "^2.0.0-beta.6",
+        "php": "^8.3"
+    },
+    "provider": "Economy\\EconomyProvider",
+    "autoload": {
+        "Economy\\": "src"
+    },
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "eco",
+        "screens": [
+            {
+                "id": "economy",
+                "area": "account",
+                "path": "economy",
+                "nav": {
+                    "label": "我的积分",
+                    "icon": "coins"
+                }
+            },
+            {
+                "id": "admin-economy",
+                "area": "admin",
+                "path": "economy",
+                "nav": {
+                    "label": "经济系统",
+                    "icon": "piggy-bank"
+                }
+            }
+        ]
+    }
+}

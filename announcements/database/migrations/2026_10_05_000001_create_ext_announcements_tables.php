@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // 旧版本用过的文件名执行过同一批建表，表已存在就跳过。
+        if (Schema::hasTable('ext_announcements_announcements')) {
+            return;
+        }
+
         Schema::create('ext_announcements_announcements', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
